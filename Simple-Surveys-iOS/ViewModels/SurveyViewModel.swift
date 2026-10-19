@@ -36,7 +36,11 @@ public final class SurveyViewModel {
         self.locationService = locationService
 
         calculateInitialRemainingTime()
-        startCountdownTimer()
+        if isExpired {
+            handleExpiration()
+        } else {
+            startCountdownTimer()
+        }
     }
 
     private func calculateInitialRemainingTime() {
@@ -74,6 +78,57 @@ public final class SurveyViewModel {
         guard !isSubmitting else { return }
         isSubmitting = true
         errorMessage = nil
+
+        // Validate required questions and constraints if not expired
+        if !isForcedExpired && !isExpired {
+            for question in survey.questions {
+                if question.isRequired {
+                    guard let answer = answers[question.questionId] else {
+                        errorMessage = "Please answer all required questions before submitting."
+                        isSubmitting = false
+                        return
+                    }
+                    if case .null = answer {
+                        errorMessage = "Please answer all required questions before submitting."
+                        isSubmitting = false
+                        return
+                    }
+                    if case .string(let str) = answer, str.trimmingCharacters(in: .whitespacesAndNewlines).isEmpty {
+                        errorMessage = "Please answer all required questions before submitting."
+                        isSubmitting = false
+                        return
+                    }
+                    if case .stringArray(let arr) = answer, arr.isEmpty {
+                        errorMessage = "Please select at least one option for \"\(question.prompt)\"."
+                        isSubmitting = false
+                        return
+                    }
+                }
+
+                // Multiple choice min/max constraints
+                if case .stringArray(let arr) = answers[question.questionId] {
+                    if let minSel = question.validationRules?.minSelections, arr.count < minSel {
+                        errorMessage = "Please select at least \(minSel) options for \"\(question.prompt)\"."
+                        isSubmitting = false
+                        return
+                    }
+                    if let maxSel = question.validationRules?.maxSelections, arr.count > maxSel {
+                        errorMessage = "Please select at most \(maxSel) options for \"\(question.prompt)\"."
+                        isSubmitting = false
+                        return
+                    }
+                }
+
+                // Text length min/max constraints
+                if case .string(let str) = answers[question.questionId] {
+                    if let minLen = question.validationRules?.minLength, str.count < minLen {
+                        errorMessage = "Answer for \"\(question.prompt)\" must be at least \(minLen) characters."
+                        isSubmitting = false
+                        return
+                    }
+                }
+            }
+        }
 
         let location = await locationService.getCurrentLocation()
         let completedAt = Date()

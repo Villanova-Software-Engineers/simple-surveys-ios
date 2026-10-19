@@ -8,6 +8,9 @@ public final class HomeViewModel {
     public var isLoading: Bool = false
     public var errorMessage: String?
     public var arePermissionsValid: Bool = true
+    public var isSurveyPresented: Bool = false
+    public var showingLegalSheet: Bool = false
+    public var activeLegalTab: LegalTab = .terms
 
     private let repository: SurveyRepositoryProtocol
     private let permissionManager: PermissionManagerProtocol
@@ -37,6 +40,7 @@ public final class HomeViewModel {
             await MainActor.run {
                 self.activeSurvey = survey
                 self.isLoading = false
+                self.isSurveyPresented = true
             }
         } catch {
             await MainActor.run {
@@ -46,8 +50,14 @@ public final class HomeViewModel {
         }
     }
 
+    public func openLegalDocument(_ tab: LegalTab) {
+        self.activeLegalTab = tab
+        self.showingLegalSheet = true
+    }
+
     public func clearActiveSurvey() {
         self.activeSurvey = nil
         self.notificationSentAt = nil
+        self.isSurveyPresented = false
     }
 }

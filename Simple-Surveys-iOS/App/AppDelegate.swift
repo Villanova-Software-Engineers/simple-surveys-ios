@@ -34,6 +34,34 @@ public final class AppDelegate: NSObject, UIApplicationDelegate, UNUserNotificat
         }
     }
 
+    public func application(
+        _ application: UIApplication,
+        didFailToRegisterForRemoteNotificationsWithError error: Error
+    ) {
+        #if targetEnvironment(simulator)
+        // Simulator fallback: register a simulated anonymous device token for testing
+        let simulatedToken = "simulated_ios_token_" + UUID().uuidString.replacingOccurrences(of: "-", with: "").lowercased()
+        Task {
+            let payload = DeviceRegistration(
+                deviceToken: simulatedToken,
+                platform: .ios,
+                timezone: TimeZone.current.identifier,
+                registeredAt: Date()
+            )
+            let _: DeviceRegistrationResponse? = try? await apiClient.post("/api/notifications/devices", body: payload)
+        }
+        #endif
+    }
+
+    // Present notification banner even when app is active in foreground
+    public func userNotificationCenter(
+        _ center: UNUserNotificationCenter,
+        willPresent notification: UNNotification,
+        withCompletionHandler completionHandler: @escaping (UNNotificationPresentationOptions) -> Void
+    ) {
+        completionHandler([.banner, .sound, .badge])
+    }
+
     // Handle incoming notification when user taps banner
     public func userNotificationCenter(
         _ center: UNUserNotificationCenter,

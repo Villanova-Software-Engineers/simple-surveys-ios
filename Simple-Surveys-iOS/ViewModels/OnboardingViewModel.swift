@@ -6,6 +6,8 @@ public final class OnboardingViewModel {
     public var isRequesting: Bool = false
     public var errorMessage: String?
     public var hasCompletedOnboarding: Bool = false
+    public var showingConsentPopUp: Bool = false
+    public var activeLegalTab: LegalTab = .privacy
 
     private let permissionManager: PermissionManagerProtocol
     private let repository: SurveyRepositoryProtocol
@@ -16,7 +18,13 @@ public final class OnboardingViewModel {
         self.hasCompletedOnboarding = UserDefaults.standard.bool(forKey: "hasCompletedOnboarding")
     }
 
-    public func enablePermissions() async {
+    /// Triggered when user clicks the button on the main page to accept the tracking stuff
+    public func promptForConsent() {
+        self.showingConsentPopUp = true
+    }
+
+    /// Called when the user agrees in the pop-up modal
+    public func acceptTermsAndEnablePermissions() async {
         isRequesting = true
         errorMessage = nil
 

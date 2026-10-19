@@ -52,6 +52,9 @@
 		B613C47E307C989E003BE546 /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = B613C412307C989E003BE546 /* AppDelegate.swift */; };
 		B613C47F307C989E003BE546 /* CameraViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = B613C434307C989E003BE546 /* CameraViewModel.swift */; };
 		B613C482307C989E003BE546 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = B613C420307C989E003BE546 /* Assets.xcassets */; };
+		B613C491307C989E003BE546 /* TermsAndConditionsView.swift in Sources */ = {isa = PBXBuildFile; fileRef = B613C490307C989E003BE546 /* TermsAndConditionsView.swift */; };
+		B613C493307C989E003BE546 /* PrivacyPolicyView.swift in Sources */ = {isa = PBXBuildFile; fileRef = B613C492307C989E003BE546 /* PrivacyPolicyView.swift */; };
+		B613C495307C989E003BE546 /* LegalSheetView.swift in Sources */ = {isa = PBXBuildFile; fileRef = B613C494307C989E003BE546 /* LegalSheetView.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -103,6 +106,9 @@
 		B613C44D307C989E003BE546 /* SurveyContainerView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SurveyContainerView.swift; sourceTree = "<group>"; };
 		B613C44E307C989E003BE546 /* TimerBadgeView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TimerBadgeView.swift; sourceTree = "<group>"; };
 		B613C452307C989E003BE546 /* IOS_FRONTEND_IMPLEMENTATION_PLAN.md */ = {isa = PBXFileReference; lastKnownFileType = net.daringfireball.markdown; path = IOS_FRONTEND_IMPLEMENTATION_PLAN.md; sourceTree = "<group>"; };
+		B613C490307C989E003BE546 /* TermsAndConditionsView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TermsAndConditionsView.swift; sourceTree = "<group>"; };
+		B613C492307C989E003BE546 /* PrivacyPolicyView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PrivacyPolicyView.swift; sourceTree = "<group>"; };
+		B613C494307C989E003BE546 /* LegalSheetView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LegalSheetView.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -273,6 +279,9 @@
 			children = (
 				B613C442307C989E003BE546 /* OnboardingView.swift */,
 				B613C443307C989E003BE546 /* PermissionRevokedView.swift */,
+				B613C490307C989E003BE546 /* TermsAndConditionsView.swift */,
+				B613C492307C989E003BE546 /* PrivacyPolicyView.swift */,
+				B613C494307C989E003BE546 /* LegalSheetView.swift */,
 			);
 			path = Onboarding;
 			sourceTree = "<group>";
@@ -445,6 +454,9 @@
 				B613C47D307C989E003BE546 /* LocationServiceProtocol.swift in Sources */,
 				B613C47E307C989E003BE546 /* AppDelegate.swift in Sources */,
 				B613C47F307C989E003BE546 /* CameraViewModel.swift in Sources */,
+				B613C491307C989E003BE546 /* TermsAndConditionsView.swift in Sources */,
+				B613C493307C989E003BE546 /* PrivacyPolicyView.swift in Sources */,
+				B613C495307C989E003BE546 /* LegalSheetView.swift in Sources */,
 			);
 		};
 /* End PBXSourcesBuildPhase section */
@@ -504,7 +516,7 @@
 				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
 				GCC_WARN_UNUSED_FUNCTION = YES;
 				GCC_WARN_UNUSED_VARIABLE = YES;
-				IPHONEOS_DEPLOYMENT_TARGET = 27.0;
+				IPHONEOS_DEPLOYMENT_TARGET = 17.0;
 				LOCALIZATION_PREFERS_STRING_CATALOGS = YES;
 				MACOSX_DEPLOYMENT_TARGET = 27.0;
 				MTL_ENABLE_DEBUG_INFO = INCLUDE_SOURCE;
@@ -568,7 +580,7 @@
 				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
 				GCC_WARN_UNUSED_FUNCTION = YES;
 				GCC_WARN_UNUSED_VARIABLE = YES;
-				IPHONEOS_DEPLOYMENT_TARGET = 27.0;
+				IPHONEOS_DEPLOYMENT_TARGET = 17.0;
 				LOCALIZATION_PREFERS_STRING_CATALOGS = YES;
 				MACOSX_DEPLOYMENT_TARGET = 27.0;
 				MTL_ENABLE_DEBUG_INFO = NO;

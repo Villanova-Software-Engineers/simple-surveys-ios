@@ -50,9 +50,21 @@ public struct OnboardingView: View {
                     Divider()
 
                     // Permissions list items
-                    permissionRow(icon: "bell.badge.fill", title: "Push Notifications", detail: "Alerts you during active survey sampling windows.")
-                    permissionRow(icon: "location.fill", title: "GPS Location", detail: "Attaches approximate coordinates at the moment of submission.")
-                    permissionRow(icon: "camera.fill", title: "Camera Access", detail: "Allows you to capture an image of your immediate surroundings.")
+                    permissionRow(
+                        icon: "bell.badge.fill",
+                        title: "Push Notifications",
+                        detail: "Alerts you during active survey sampling windows."
+                    )
+                    permissionRow(
+                        icon: "location.fill",
+                        title: "GPS Location",
+                        detail: "Attaches approximate coordinates at the moment of submission."
+                    )
+                    permissionRow(
+                        icon: "camera.fill",
+                        title: "Camera Access",
+                        detail: "Allows you to capture an image of your immediate surroundings."
+                    )
                 }
                 .padding(24)
                 .background(AppTheme.pureWhite)
@@ -71,9 +83,9 @@ public struct OnboardingView: View {
 
                 Spacer()
 
-                // Enable Permissions Button
+                // Enable Permissions Button (triggers the Consent & Privacy pop-up)
                 Button(action: {
-                    Task { await viewModel.enablePermissions() }
+                    viewModel.promptForConsent()
                 }) {
                     HStack {
                         if viewModel.isRequesting {
@@ -96,6 +108,14 @@ public struct OnboardingView: View {
                 .padding(.horizontal, 24)
                 .padding(.bottom, 20)
             }
+        }
+        // Pop-up modal sheet triggered when clicking the button to accept the tracking stuff
+        .sheet(isPresented: $viewModel.showingConsentPopUp) {
+            LegalSheetView(initialTab: viewModel.activeLegalTab, onAccept: {
+                Task {
+                    await viewModel.acceptTermsAndEnablePermissions()
+                }
+            })
         }
     }
 
