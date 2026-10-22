@@ -41,15 +41,9 @@ public struct HomeView: View {
                 }
             }
             .fullScreenCover(isPresented: $viewModel.isSurveyPresented) {
-                if let survey = viewModel.activeSurvey {
+                if let surveyVM = viewModel.ensureSurveyViewModel(repository: repository, locationService: locationService) {
                     SurveyContainerView(
-                        viewModel: SurveyViewModel(
-                            survey: survey,
-                            notificationSentAt: viewModel.notificationSentAt,
-                            timeToCompleteMinutes: AppConfiguration.defaultTimeToCompleteMinutes,
-                            repository: repository,
-                            locationService: locationService
-                        ),
+                        viewModel: surveyVM,
                         onFinished: {
                             viewModel.clearActiveSurvey()
                         }
@@ -81,6 +75,30 @@ public struct HomeView: View {
                             .font(.subheadline)
                             .foregroundColor(.secondary)
                             .lineSpacing(2)
+
+                        #if DEBUG
+                        Button(action: {
+                            Task {
+                                await viewModel.handleIncomingSurveyPrompt(
+                                    surveyId: "sample-survey-daily",
+                                    sentAt: Date()
+                                )
+                            }
+                        }) {
+                            HStack(spacing: 8) {
+                                Image(systemName: "bell.badge.fill")
+                                    .foregroundColor(AppTheme.gold)
+                                Text("Simulate Survey Prompt (Test)")
+                                    .font(.subheadline.bold())
+                                    .foregroundColor(AppTheme.navy)
+                            }
+                            .frame(maxWidth: .infinity)
+                            .frame(height: 42)
+                            .background(AppTheme.gold.opacity(0.12))
+                            .cornerRadius(10)
+                        }
+                        .padding(.top, 4)
+                        #endif
                     }
                     .padding()
                     .frame(maxWidth: .infinity, alignment: .leading)
@@ -115,6 +133,7 @@ public struct HomeView: View {
                             }
 
                             Button(action: {
+                                _ = viewModel.ensureSurveyViewModel(repository: repository, locationService: locationService)
                                 viewModel.isSurveyPresented = true
                             }) {
                                 HStack {

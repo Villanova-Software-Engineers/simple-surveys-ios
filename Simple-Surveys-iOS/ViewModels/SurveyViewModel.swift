@@ -2,7 +2,9 @@ import SwiftUI
 import Observation
 
 @Observable
-public final class SurveyViewModel {
+public final class SurveyViewModel: Identifiable {
+    public var id: String { survey.surveyId }
+
     // State
     public var survey: SurveyConfig
     public var answers: [String: AnyCodableValue] = [:]

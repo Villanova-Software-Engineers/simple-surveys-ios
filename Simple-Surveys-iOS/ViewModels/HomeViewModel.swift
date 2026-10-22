@@ -4,6 +4,7 @@ import Observation
 @Observable
 public final class HomeViewModel {
     public var activeSurvey: SurveyConfig?
+    public var activeSurveyViewModel: SurveyViewModel?
     public var notificationSentAt: Date?
     public var isLoading: Bool = false
     public var errorMessage: String?
@@ -13,13 +14,16 @@ public final class HomeViewModel {
     public var activeLegalTab: LegalTab = .terms
 
     private let repository: SurveyRepositoryProtocol
+    private let locationService: LocationServiceProtocol
     private let permissionManager: PermissionManagerProtocol
 
     public init(
         repository: SurveyRepositoryProtocol,
+        locationService: LocationServiceProtocol = LocationService(),
         permissionManager: PermissionManagerProtocol
     ) {
         self.repository = repository
+        self.locationService = locationService
         self.permissionManager = permissionManager
     }
 
@@ -31,14 +35,23 @@ public final class HomeViewModel {
     }
 
     public func handleIncomingSurveyPrompt(surveyId: String, sentAt: Date?) async {
-        isLoading = true
-        errorMessage = nil
-        self.notificationSentAt = sentAt
+        await MainActor.run {
+            self.isLoading = true
+            self.errorMessage = nil
+            self.notificationSentAt = sentAt ?? Date()
+        }
 
         do {
             let survey = try await repository.fetchScheduledSurvey(id: surveyId)
             await MainActor.run {
                 self.activeSurvey = survey
+                self.activeSurveyViewModel = SurveyViewModel(
+                    survey: survey,
+                    notificationSentAt: self.notificationSentAt,
+                    timeToCompleteMinutes: AppConfiguration.defaultTimeToCompleteMinutes,
+                    repository: self.repository,
+                    locationService: self.locationService
+                )
                 self.isLoading = false
                 self.isSurveyPresented = true
             }
@@ -50,6 +63,22 @@ public final class HomeViewModel {
         }
     }
 
+    public func ensureSurveyViewModel(repository: SurveyRepositoryProtocol, locationService: LocationServiceProtocol) -> SurveyViewModel? {
+        if let existing = activeSurveyViewModel {
+            return existing
+        }
+        guard let survey = activeSurvey else { return nil }
+        let vm = SurveyViewModel(
+            survey: survey,
+            notificationSentAt: notificationSentAt,
+            timeToCompleteMinutes: AppConfiguration.defaultTimeToCompleteMinutes,
+            repository: repository,
+            locationService: locationService
+        )
+        self.activeSurveyViewModel = vm
+        return vm
+    }
+
     public func openLegalDocument(_ tab: LegalTab) {
         self.activeLegalTab = tab
         self.showingLegalSheet = true
@@ -57,6 +86,7 @@ public final class HomeViewModel {
 
     public func clearActiveSurvey() {
         self.activeSurvey = nil
+        self.activeSurveyViewModel = nil
         self.notificationSentAt = nil
         self.isSurveyPresented = false
     }

@@ -92,160 +92,79 @@ public struct LegalSheetView: View {
     // MARK: - Combined Scrollable Document for Consent Pop-Up Mode
     private var consentPopUpContent: some View {
         GeometryReader { scrollContainerGeo in
-            ScrollViewReader { proxy in
-                ZStack {
-                    AppTheme.canvasBackground.ignoresSafeArea()
+            ZStack {
+                AppTheme.canvasBackground.ignoresSafeArea()
 
-                    ScrollView {
-                        LazyVStack(alignment: .leading, spacing: 18) {
-                            // Top Notice & Jump Bar
-                            VStack(alignment: .leading, spacing: 10) {
-                                HStack(spacing: 8) {
-                                    Image(systemName: hasScrolledToBottom ? "checkmark.circle.fill" : "arrow.down.circle.fill")
-                                        .font(.title3)
-                                        .foregroundColor(hasScrolledToBottom ? .green : AppTheme.gold)
-
-                                    Text(hasScrolledToBottom ? "Entire Agreement Reviewed" : "Scroll to Bottom to Accept")
-                                        .font(.headline)
-                                        .foregroundColor(AppTheme.navy)
-                                }
-
-                                Text("Please scroll through both the Privacy Policy and Terms of Participation below to unlock the acceptance button.")
-                                    .font(.caption)
-                                    .foregroundColor(.secondary)
-                                    .lineSpacing(2)
-
-                                // Quick section jump links
-                                HStack(spacing: 10) {
-                                    Button(action: {
-                                        withAnimation { proxy.scrollTo("privacy_section", anchor: .top) }
-                                    }) {
-                                        HStack(spacing: 4) {
-                                            Image(systemName: "shield.fill")
-                                            Text("1. Privacy Policy")
-                                        }
-                                        .font(.caption2.bold())
-                                        .foregroundColor(AppTheme.navy)
-                                        .padding(.horizontal, 10)
-                                        .padding(.vertical, 6)
-                                        .background(AppTheme.navy.opacity(0.08))
-                                        .cornerRadius(8)
-                                    }
-
-                                    Button(action: {
-                                        withAnimation { proxy.scrollTo("terms_section", anchor: .top) }
-                                    }) {
-                                        HStack(spacing: 4) {
-                                            Image(systemName: "doc.plaintext.fill")
-                                            Text("2. Terms & Conditions")
-                                        }
-                                        .font(.caption2.bold())
-                                        .foregroundColor(AppTheme.navy)
-                                        .padding(.horizontal, 10)
-                                        .padding(.vertical, 6)
-                                        .background(AppTheme.navy.opacity(0.08))
-                                        .cornerRadius(8)
-                                    }
-                                }
-                            }
-                            .padding()
-                            .frame(maxWidth: .infinity, alignment: .leading)
-                            .background(AppTheme.pureWhite)
-                            .cornerRadius(14)
-                            .overlay(RoundedRectangle(cornerRadius: 14).stroke(hasScrolledToBottom ? Color.green.opacity(0.3) : AppTheme.gold.opacity(0.4), lineWidth: 1.5))
-                            .shadow(color: AppTheme.navy.opacity(0.04), radius: 6, x: 0, y: 2)
-
-                            // PART 1: Privacy Policy
-                            VStack(alignment: .leading, spacing: 14) {
-                                HStack {
-                                    Image(systemName: "shield.lefthalf.filled")
-                                        .font(.title3)
-                                        .foregroundColor(AppTheme.navy)
-                                    Text("Part 1: Privacy Policy")
-                                        .font(.title3.bold())
-                                        .foregroundColor(AppTheme.navy)
-                                }
-                                .id("privacy_section")
-
-                                Text("Strict Anonymity & Participant Data Protection")
-                                    .font(.subheadline.weight(.semibold))
-                                    .foregroundColor(AppTheme.gold)
-                                    .textCase(.uppercase)
-                            }
-                            .padding(.top, 6)
-
-                            PrivacyPolicySectionsView()
-
-                            Divider()
-                                .padding(.vertical, 8)
-
-                            // PART 2: Terms & Conditions
-                            VStack(alignment: .leading, spacing: 14) {
-                                HStack {
-                                    Image(systemName: "doc.plaintext.fill")
-                                        .font(.title3)
-                                        .foregroundColor(AppTheme.navy)
-                                    Text("Part 2: Terms & Conditions")
-                                        .font(.title3.bold())
-                                        .foregroundColor(AppTheme.navy)
-                                }
-                                .id("terms_section")
-
-                                Text("Study Participation Requirements & Protocol")
-                                    .font(.subheadline.weight(.semibold))
-                                    .foregroundColor(AppTheme.gold)
-                                    .textCase(.uppercase)
-                            }
-                            .padding(.top, 6)
-
-                            TermsAndConditionsSectionsView()
-
-                            // End of Agreement Card (Trigger for Scroll-to-Bottom)
-                            VStack(spacing: 12) {
-                                Image(systemName: "checkmark.seal.fill")
-                                    .font(.system(size: 40))
-                                    .foregroundColor(AppTheme.lightBlue)
-
-                                Text("You Have Reached the End")
-                                    .font(.headline)
+                ScrollView {
+                    LazyVStack(alignment: .leading, spacing: 18) {
+                        // PART 1: Privacy Policy
+                        VStack(alignment: .leading, spacing: 14) {
+                            HStack {
+                                Image(systemName: "shield.lefthalf.filled")
+                                    .font(.title3)
                                     .foregroundColor(AppTheme.navy)
-
-                                Text("Thank you for reviewing the full Study Agreement and Privacy Policy. You can now tap the button below to enable permissions and begin.")
-                                    .font(.caption)
-                                    .foregroundColor(.secondary)
-                                    .multilineTextAlignment(.center)
-                                    .lineSpacing(2)
+                                Text("Part 1: Privacy Policy")
+                                    .font(.title3.bold())
+                                    .foregroundColor(AppTheme.navy)
                             }
-                            .padding(20)
-                            .frame(maxWidth: .infinity)
-                            .background(AppTheme.pureWhite)
-                            .cornerRadius(14)
-                            .overlay(RoundedRectangle(cornerRadius: 14).stroke(AppTheme.lightBlue.opacity(0.5), lineWidth: 1.5))
-                            .shadow(color: AppTheme.navy.opacity(0.05), radius: 6, x: 0, y: 2)
-                            .padding(.top, 10)
+
+                            Text("Strict Anonymity & Participant Data Protection")
+                                .font(.subheadline.weight(.semibold))
+                                .foregroundColor(AppTheme.gold)
+                                .textCase(.uppercase)
+                        }
+                        .padding(.top, 6)
+
+                        PrivacyPolicySectionsView()
+
+                        Divider()
+                            .padding(.vertical, 8)
+
+                        // PART 2: Terms & Conditions
+                        VStack(alignment: .leading, spacing: 14) {
+                            HStack {
+                                Image(systemName: "doc.plaintext.fill")
+                                    .font(.title3)
+                                    .foregroundColor(AppTheme.navy)
+                                Text("Part 2: Terms & Conditions")
+                                    .font(.title3.bold())
+                                    .foregroundColor(AppTheme.navy)
+                            }
+
+                            Text("Study Participation Requirements & Protocol")
+                                .font(.subheadline.weight(.semibold))
+                                .foregroundColor(AppTheme.gold)
+                                .textCase(.uppercase)
+                        }
+                        .padding(.top, 6)
+
+                        TermsAndConditionsSectionsView()
+
+                        // Invisible bottom detector marker
+                        Color.clear
+                            .frame(height: 20)
                             .onAppear {
                                 withAnimation(.easeInOut(duration: 0.25)) {
                                     hasScrolledToBottom = true
                                 }
                             }
 
-                            // Coordinate space marker for preference key detection
-                            GeometryReader { markerGeo in
-                                Color.clear.preference(
-                                    key: BottomMarkerPreference.self,
-                                    value: markerGeo.frame(in: .named("consentScrollSpace")).maxY
-                                )
-                            }
-                            .frame(height: 20)
+                        // Coordinate space marker for preference key detection
+                        GeometryReader { markerGeo in
+                            Color.clear.preference(
+                                key: BottomMarkerPreference.self,
+                                value: markerGeo.frame(in: .named("consentScrollSpace")).maxY
+                            )
                         }
-                        .padding()
+                        .frame(height: 20)
                     }
-                    .coordinateSpace(name: "consentScrollSpace")
-                    .onPreferenceChange(BottomMarkerPreference.self) { bottomY in
-                        if bottomY <= scrollContainerGeo.size.height + 60 {
-                            withAnimation(.easeInOut(duration: 0.25)) {
-                                hasScrolledToBottom = true
-                            }
+                    .padding()
+                }
+                .coordinateSpace(name: "consentScrollSpace")
+                .onPreferenceChange(BottomMarkerPreference.self) { bottomY in
+                    if bottomY <= scrollContainerGeo.size.height + 60 {
+                        withAnimation(.easeInOut(duration: 0.25)) {
+                            hasScrolledToBottom = true
                         }
                     }
                 }

@@ -13,6 +13,22 @@ public final class AppDelegate: NSObject, UIApplicationDelegate, UNUserNotificat
         didFinishLaunchingWithOptions launchOptions: [UIApplication.LaunchOptionsKey: Any]? = nil
     ) -> Bool {
         UNUserNotificationCenter.current().delegate = self
+        if let remoteNotif = launchOptions?[.remoteNotification] as? [String: Any],
+           let surveyId = remoteNotif["survey_id"] as? String {
+            let sentAtString = remoteNotif["notification_sent_at"] as? String
+            let isoFormatter = ISO8601DateFormatter()
+            let sentAtDate = sentAtString.flatMap { isoFormatter.date(from: $0) }
+            DispatchQueue.main.asyncAfter(deadline: .now() + 0.6) {
+                NotificationCenter.default.post(
+                    name: .openSurveyFromNotification,
+                    object: nil,
+                    userInfo: [
+                        "survey_id": surveyId,
+                        "notification_sent_at": (sentAtDate ?? Date()) as Any
+                    ]
+                )
+            }
+        }
         return true
     }
 
@@ -75,13 +91,15 @@ public final class AppDelegate: NSObject, UIApplicationDelegate, UNUserNotificat
         let sentAtDate = sentAtString.flatMap { isoFormatter.date(from: $0) }
 
         // Route app to survey screen with temporal marker
-        NotificationCenter.default.post(
-            name: .openSurveyFromNotification,
-            object: nil,
-            userInfo: [
-                "survey_id": surveyId,
-                "notification_sent_at": sentAtDate as Any
-            ]
-        )
+        await MainActor.run {
+            NotificationCenter.default.post(
+                name: .openSurveyFromNotification,
+                object: nil,
+                userInfo: [
+                    "survey_id": surveyId,
+                    "notification_sent_at": (sentAtDate ?? Date()) as Any
+                ]
+            )
+        }
     }
 }
