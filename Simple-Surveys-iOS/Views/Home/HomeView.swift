@@ -159,7 +159,6 @@ public struct HomeView: View {
                             }
                         }
                         .padding(.top, 4)
-                        #endif
                     }
                     .padding()
                     .frame(maxWidth: .infinity, alignment: .leading)
@@ -167,6 +166,7 @@ public struct HomeView: View {
                     .cornerRadius(16)
                     .overlay(RoundedRectangle(cornerRadius: 16).stroke(AppTheme.navy.opacity(0.1), lineWidth: 1))
                     .shadow(color: AppTheme.navy.opacity(0.04), radius: 6, x: 0, y: 2)
+                }
 
                 // 3. Today's Scheduling & Windows Card
                 VStack(alignment: .leading, spacing: 14) {
@@ -279,20 +279,11 @@ public struct HomeView: View {
                 if viewModel.isLoading {
                     ProgressView("Loading prompt...")
                         .padding()
-                        .background(AppTheme.pureWhite)
-                        .cornerRadius(16)
-                        .overlay(RoundedRectangle(cornerRadius: 16).stroke(AppTheme.lightBlue, lineWidth: 1.5))
-                        .shadow(color: AppTheme.lightBlue.opacity(0.15), radius: 8, x: 0, y: 3)
-                    }
-
-                    // Loading prompt spinner
-                    if viewModel.isLoading {
-                        ProgressView("Loading prompt...")
-                            .padding()
-                    }
+                }
 
                 Spacer(minLength: 20)
             }
+            .padding()
 
             Spacer(minLength: 0)
 
