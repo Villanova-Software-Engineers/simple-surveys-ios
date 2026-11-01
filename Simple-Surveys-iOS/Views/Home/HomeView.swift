@@ -29,6 +29,7 @@ public struct HomeView: View {
                 }
             }
             .navigationTitle("Simple Surveys")
+            .navigationBarTitleDisplayMode(.inline)
             .task {
                 await viewModel.checkPermissions()
                 await viewModel.syncScheduleAndPrompts()
@@ -39,6 +40,9 @@ public struct HomeView: View {
                 if let surveyVM = viewModel.currentSurveyViewModel {
                     SurveyContainerView(viewModel: surveyVM)
                 }
+            }
+            .sheet(isPresented: $viewModel.showingLegalSheet) {
+                LegalSheetView(initialTab: viewModel.activeLegalTab)
             }
         }
     }
@@ -93,9 +97,10 @@ public struct HomeView: View {
                 if let survey = viewModel.activeSurvey {
                     VStack(alignment: .leading, spacing: 14) {
                         HStack {
-                            Image(systemName: "bell.badge.fill")
-                                .foregroundColor(AppTheme.lightBlue)
-                            Text("Scheduled Prompt Ready")
+                            Circle()
+                                .fill(viewModel.activeSurvey != nil ? AppTheme.lightBlue : Color.green)
+                                .frame(width: 12, height: 12)
+                            Text(viewModel.activeSurvey != nil ? "Active Survey Pending" : "Sampling Schedule Active")
                                 .font(.headline)
                                 .foregroundColor(AppTheme.navy)
                             Spacer()
@@ -153,13 +158,15 @@ public struct HomeView: View {
                                     .cornerRadius(12)
                             }
                         }
+                        .padding(.top, 4)
+                        #endif
                     }
                     .padding()
+                    .frame(maxWidth: .infinity, alignment: .leading)
                     .background(AppTheme.pureWhite)
                     .cornerRadius(16)
-                    .overlay(RoundedRectangle(cornerRadius: 16).stroke(AppTheme.lightBlue, lineWidth: 1.5))
-                    .shadow(color: AppTheme.lightBlue.opacity(0.15), radius: 8, x: 0, y: 3)
-                }
+                    .overlay(RoundedRectangle(cornerRadius: 16).stroke(AppTheme.navy.opacity(0.1), lineWidth: 1))
+                    .shadow(color: AppTheme.navy.opacity(0.04), radius: 6, x: 0, y: 2)
 
                 // 3. Today's Scheduling & Windows Card
                 VStack(alignment: .leading, spacing: 14) {
@@ -272,18 +279,42 @@ public struct HomeView: View {
                 if viewModel.isLoading {
                     ProgressView("Loading prompt...")
                         .padding()
-                }
+                        .background(AppTheme.pureWhite)
+                        .cornerRadius(16)
+                        .overlay(RoundedRectangle(cornerRadius: 16).stroke(AppTheme.lightBlue, lineWidth: 1.5))
+                        .shadow(color: AppTheme.lightBlue.opacity(0.15), radius: 8, x: 0, y: 3)
+                    }
 
-                if let error = viewModel.errorMessage {
-                    Text(error)
-                        .font(.footnote)
-                        .foregroundColor(.red)
-                        .padding()
-                }
+                    // Loading prompt spinner
+                    if viewModel.isLoading {
+                        ProgressView("Loading prompt...")
+                            .padding()
+                    }
 
                 Spacer(minLength: 20)
             }
-            .padding()
+
+            Spacer(minLength: 0)
+
+            // Privacy Policy & Terms of Condition button forced to the bottom of the page
+            Button(action: {
+                viewModel.openLegalDocument(.privacy)
+            }) {
+                HStack(spacing: 6) {
+                    Image(systemName: "shield.checkmark.fill")
+                        .font(.caption)
+                        .foregroundColor(AppTheme.navy)
+                    Text("Privacy Policy & Terms of Condition")
+                        .font(.footnote.weight(.medium))
+                        .foregroundColor(AppTheme.navy)
+                }
+                .padding(.vertical, 10)
+                .padding(.horizontal, 16)
+                .background(AppTheme.navy.opacity(0.06))
+                .clipShape(Capsule())
+            }
+            .padding(.horizontal)
+            .padding(.bottom, 16)
         }
     }
 

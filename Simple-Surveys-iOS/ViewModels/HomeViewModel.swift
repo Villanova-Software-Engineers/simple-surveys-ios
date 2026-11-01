@@ -4,6 +4,7 @@ import Observation
 @Observable
 public final class HomeViewModel {
     public var activeSurvey: SurveyConfig?
+    public var activeSurveyViewModel: SurveyViewModel?
     public var notificationSentAt: Date?
     public var timeToCompleteMinutes: Int = AppConfiguration.defaultTimeToCompleteMinutes
     public var isLoading: Bool = false
@@ -24,6 +25,7 @@ public final class HomeViewModel {
     private var windowCountdownTask: Task<Void, Never>?
 
     private let repository: SurveyRepositoryProtocol
+    private let locationService: LocationServiceProtocol
     private let permissionManager: PermissionManagerProtocol
     private let scheduler: NotificationSchedulerProtocol
     private let locationService: LocationServiceProtocol
@@ -35,6 +37,7 @@ public final class HomeViewModel {
         locationService: LocationServiceProtocol
     ) {
         self.repository = repository
+        self.locationService = locationService
         self.permissionManager = permissionManager
         self.scheduler = scheduler
         self.locationService = locationService
@@ -109,6 +112,13 @@ public final class HomeViewModel {
             let survey = try await repository.fetchScheduledSurvey(id: surveyId)
             await MainActor.run {
                 self.activeSurvey = survey
+                self.activeSurveyViewModel = SurveyViewModel(
+                    survey: survey,
+                    notificationSentAt: self.notificationSentAt,
+                    timeToCompleteMinutes: AppConfiguration.defaultTimeToCompleteMinutes,
+                    repository: self.repository,
+                    locationService: self.locationService
+                )
                 self.isLoading = false
                 self.startActiveWindowCountdown(sentAt: promptSentAt, limitMinutes: self.timeToCompleteMinutes)
                 if autoOpen {
@@ -160,6 +170,7 @@ public final class HomeViewModel {
 
     public func clearActiveSurvey() {
         self.activeSurvey = nil
+        self.activeSurveyViewModel = nil
         self.notificationSentAt = nil
         self.dismissSurvey()
         self.windowCountdownTask?.cancel()

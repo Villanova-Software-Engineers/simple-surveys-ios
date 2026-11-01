@@ -3,19 +3,30 @@ import SwiftUI
 public struct SurveyContainerView: View {
     @Environment(\.dismiss) private var dismiss
     @Bindable public var viewModel: SurveyViewModel
-    @State private var showingCamera = false
+    public var onFinished: (() -> Void)? = nil
 
-    public init(viewModel: SurveyViewModel) {
+    @State private var showingCamera = false
+    @State private var showingCancelAlert = false
+    @Environment(\.dismiss) private var dismiss
+
+    public init(viewModel: SurveyViewModel, onFinished: (() -> Void)? = nil) {
         self.viewModel = viewModel
+        self.onFinished = onFinished
     }
 
     public var body: some View {
         NavigationStack {
             ZStack {
                 if viewModel.isExpired {
-                    ExpiredSurveyView()
+                    ExpiredSurveyView {
+                        onFinished?()
+                        dismiss()
+                    }
                 } else if viewModel.submissionCompleted {
-                    SurveyCompletedView()
+                    SurveyCompletedView {
+                        onFinished?()
+                        dismiss()
+                    }
                 } else {
                     surveyContent
                 }
@@ -33,6 +44,15 @@ public struct SurveyContainerView: View {
                         TimerBadgeView(remainingSeconds: viewModel.remainingSeconds)
                     }
                 }
+            }
+            .alert("Exit Survey?", isPresented: $showingCancelAlert) {
+                Button("Keep Answering", role: .cancel) {}
+                Button("Exit", role: .destructive) {
+                    onFinished?()
+                    dismiss()
+                }
+            } message: {
+                Text("Your progress on this prompt will not be submitted.")
             }
         }
         .sheet(isPresented: $showingCamera) {
@@ -68,11 +88,16 @@ public struct SurveyContainerView: View {
                 )
                 .padding(.horizontal)
 
-                // Error message
+                // Error message banner
                 if let err = viewModel.errorMessage {
                     Text(err)
-                        .font(.footnote)
+                        .font(.footnote.bold())
                         .foregroundColor(.red)
+                        .multilineTextAlignment(.center)
+                        .padding()
+                        .frame(maxWidth: .infinity)
+                        .background(Color.red.opacity(0.1))
+                        .cornerRadius(10)
                         .padding(.horizontal)
                 }
 
