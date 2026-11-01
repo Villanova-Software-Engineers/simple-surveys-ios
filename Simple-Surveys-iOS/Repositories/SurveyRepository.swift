@@ -15,6 +15,16 @@ public final class SurveyRepository: SurveyRepositoryProtocol {
         return try await apiClient.get("/api/surveys/\(id)")
     }
 
+    /// Fetches all active survey definitions stored on the backend
+    public func listSurveys() async throws -> [SurveyConfig] {
+        return try await apiClient.get("/api/surveys")
+    }
+
+    /// Fetches active sampling rules and notification window configuration from the backend
+    public func fetchScheduleConfig() async throws -> SamplingRules {
+        return try await apiClient.get("/api/notifications/schedule")
+    }
+
     /// Submits a completed or expired survey response with optional surroundings photo
     public func submitResponse(
         submission: SurveyResponseSubmission,

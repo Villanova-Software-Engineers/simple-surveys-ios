@@ -12,6 +12,7 @@ public final class SurveyViewModel {
     public var remainingSeconds: Int = 0
     public var errorMessage: String?
     public var submissionCompleted: Bool = false
+    @ObservationIgnored public var onSubmissionCompleted: (() -> Void)?
 
     private let notificationSentAt: Date?
     private let startedAt: Date
@@ -44,8 +45,9 @@ public final class SurveyViewModel {
         let deadline = referenceDate.addingTimeInterval(Double(timeToCompleteMinutes * 60))
         let remaining = Int(deadline.timeIntervalSince(Date()))
         self.remainingSeconds = max(0, remaining)
-        if self.remainingSeconds == 0 {
+        if self.remainingSeconds <= 0 {
             self.isExpired = true
+            handleExpiration()
         }
     }
 
@@ -104,12 +106,20 @@ public final class SurveyViewModel {
                 submission: submission,
                 imageData: capturedImage?.data
             )
-            submissionCompleted = true
+            await MainActor.run {
+                self.submissionCompleted = true
+                self.timerTask?.cancel()
+                self.onSubmissionCompleted?()
+            }
         } catch {
-            errorMessage = error.localizedDescription
+            await MainActor.run {
+                self.errorMessage = error.localizedDescription
+            }
         }
 
-        isSubmitting = false
+        await MainActor.run {
+            self.isSubmitting = false
+        }
     }
 
     deinit {

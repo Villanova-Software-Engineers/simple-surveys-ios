@@ -8,18 +8,15 @@ public struct TimerBadgeView: View {
     }
 
     public var body: some View {
-        HStack(spacing: 4) {
-            Image(systemName: "timer")
-            Text(timeString(from: remainingSeconds))
-                .monospacedDigit()
-                .bold()
-        }
-        .font(.caption)
-        .padding(.horizontal, 8)
-        .padding(.vertical, 4)
-        .background(remainingSeconds < 60 ? Color.red.opacity(0.15) : AppTheme.lightBlue.opacity(0.15))
-        .foregroundColor(remainingSeconds < 60 ? .red : AppTheme.navy)
-        .clipShape(Capsule())
+        Text(timeString(from: remainingSeconds))
+            .font(.caption.bold())
+            .monospacedDigit()
+            .padding(.horizontal, 10)
+            .padding(.vertical, 5)
+            .background(remainingSeconds < 60 ? Color.red.opacity(0.18) : AppTheme.lightBlue.opacity(0.2))
+            .foregroundColor(remainingSeconds < 60 ? .red : AppTheme.navy)
+            .clipShape(Capsule())
+            .fixedSize()
     }
 
     private func timeString(from secs: Int) -> String {

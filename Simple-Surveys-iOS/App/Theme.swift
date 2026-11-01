@@ -13,6 +13,6 @@ public enum AppTheme {
     /// WHITE: Card backgrounds, dark button labels, pure contrasts
     public static let pureWhite = Color.white // #FFFFFF
     
-    /// Background Canvas Color
-    public static let canvasBackground = Color(UIColor.systemGroupedBackground)
+    /// Background Canvas Color - light gray canvas
+    public static let canvasBackground = Color(red: 242.0 / 255.0, green: 242.0 / 255.0, blue: 247.0 / 255.0) // #F2F2F7
 }

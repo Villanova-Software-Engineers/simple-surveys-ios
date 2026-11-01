@@ -5,8 +5,6 @@ public struct HomeView: View {
     public let repository: SurveyRepositoryProtocol
     public let locationService: LocationServiceProtocol
 
-    @State private var showingSurveySheet = false
-
     public init(
         viewModel: HomeViewModel,
         repository: SurveyRepositoryProtocol,
@@ -33,18 +31,13 @@ public struct HomeView: View {
             .navigationTitle("Simple Surveys")
             .task {
                 await viewModel.checkPermissions()
+                await viewModel.syncScheduleAndPrompts()
             }
-            .fullScreenCover(isPresented: $showingSurveySheet) {
-                if let survey = viewModel.activeSurvey {
-                    SurveyContainerView(
-                        viewModel: SurveyViewModel(
-                            survey: survey,
-                            notificationSentAt: viewModel.notificationSentAt,
-                            timeToCompleteMinutes: AppConfiguration.defaultTimeToCompleteMinutes,
-                            repository: repository,
-                            locationService: locationService
-                        )
-                    )
+            .fullScreenCover(isPresented: $viewModel.shouldOpenSurveySheet, onDismiss: {
+                viewModel.dismissSurvey()
+            }) {
+                if let surveyVM = viewModel.currentSurveyViewModel {
+                    SurveyContainerView(viewModel: surveyVM)
                 }
             }
         }
@@ -53,7 +46,27 @@ public struct HomeView: View {
     private var mainContent: some View {
         ScrollView {
             VStack(spacing: 20) {
-                // Header status card
+                // Status banner if present
+                if let banner = viewModel.statusBanner {
+                    HStack(spacing: 8) {
+                        Image(systemName: "checkmark.circle.fill")
+                            .foregroundColor(AppTheme.lightBlue)
+                        Text(banner)
+                            .font(.footnote.weight(.medium))
+                            .foregroundColor(AppTheme.navy)
+                        Spacer()
+                        Button(action: { viewModel.statusBanner = nil }) {
+                            Image(systemName: "xmark")
+                                .font(.caption2)
+                                .foregroundColor(.secondary)
+                        }
+                    }
+                    .padding(12)
+                    .background(AppTheme.lightBlue.opacity(0.12))
+                    .cornerRadius(10)
+                }
+
+                // 1. Study Status Header Card
                 VStack(alignment: .leading, spacing: 10) {
                     HStack {
                         Circle()
@@ -76,41 +89,69 @@ public struct HomeView: View {
                 .overlay(RoundedRectangle(cornerRadius: 16).stroke(AppTheme.navy.opacity(0.1), lineWidth: 1))
                 .shadow(color: AppTheme.navy.opacity(0.04), radius: 6, x: 0, y: 2)
 
-                // Active survey prompt banner if available
+                // 2. Active Survey Prompt Banner (with Live Window Countdown)
                 if let survey = viewModel.activeSurvey {
-                    VStack(alignment: .leading, spacing: 12) {
+                    VStack(alignment: .leading, spacing: 14) {
                         HStack {
                             Image(systemName: "bell.badge.fill")
                                 .foregroundColor(AppTheme.lightBlue)
                             Text("Scheduled Prompt Ready")
                                 .font(.headline)
                                 .foregroundColor(AppTheme.navy)
-                        }
+                            Spacer()
 
-                        Text(survey.title)
-                            .font(.title3.bold())
-                            .foregroundColor(.primary)
-
-                        if let desc = survey.description {
-                            Text(desc)
-                                .font(.subheadline)
-                                .foregroundColor(.secondary)
-                        }
-
-                        Button(action: {
-                            showingSurveySheet = true
-                        }) {
-                            HStack {
-                                Text("Start Survey")
-                                    .font(.headline)
-                                    .foregroundColor(AppTheme.pureWhite)
-                                Image(systemName: "arrow.right")
-                                    .foregroundColor(AppTheme.lightBlue)
+                            // Window status badge
+                            if viewModel.activeWindowRemainingSeconds > 0 {
+                                TimerBadgeView(remainingSeconds: viewModel.activeWindowRemainingSeconds)
+                            } else {
+                                Text("Window Expired")
+                                    .font(.caption.bold())
+                                    .padding(.horizontal, 8)
+                                    .padding(.vertical, 4)
+                                    .background(AppTheme.gold.opacity(0.2))
+                                    .foregroundColor(AppTheme.gold)
+                                    .clipShape(Capsule())
                             }
-                            .frame(maxWidth: .infinity)
-                            .frame(height: 48)
-                            .background(AppTheme.navy)
-                            .cornerRadius(12)
+                        }
+
+                        VStack(alignment: .leading, spacing: 4) {
+                            Text(survey.title)
+                                .font(.title3.bold())
+                                .foregroundColor(.primary)
+
+                            if let desc = survey.description {
+                                Text(desc)
+                                    .font(.subheadline)
+                                    .foregroundColor(.secondary)
+                            }
+                        }
+
+                        HStack(spacing: 12) {
+                            Button(action: {
+                                viewModel.startActiveSurvey()
+                            }) {
+                                HStack {
+                                    Text(viewModel.activeWindowRemainingSeconds > 0 ? "Start Survey" : "View Expired Prompt")
+                                        .font(.headline)
+                                        .foregroundColor(AppTheme.pureWhite)
+                                    Image(systemName: "arrow.right")
+                                        .foregroundColor(AppTheme.lightBlue)
+                                }
+                                .frame(maxWidth: .infinity)
+                                .frame(height: 48)
+                                .background(AppTheme.navy)
+                                .cornerRadius(12)
+                            }
+
+                            Button(action: {
+                                viewModel.clearActiveSurvey()
+                            }) {
+                                Image(systemName: "xmark")
+                                    .foregroundColor(.secondary)
+                                    .frame(width: 48, height: 48)
+                                    .background(Color(.secondarySystemBackground))
+                                    .cornerRadius(12)
+                            }
                         }
                     }
                     .padding()
@@ -119,6 +160,114 @@ public struct HomeView: View {
                     .overlay(RoundedRectangle(cornerRadius: 16).stroke(AppTheme.lightBlue, lineWidth: 1.5))
                     .shadow(color: AppTheme.lightBlue.opacity(0.15), radius: 8, x: 0, y: 3)
                 }
+
+                // 3. Today's Scheduling & Windows Card
+                VStack(alignment: .leading, spacing: 14) {
+                    HStack {
+                        Image(systemName: "calendar.badge.clock")
+                            .foregroundColor(AppTheme.gold)
+                            .font(.title3)
+                        Text("Today's Schedule & Sampling")
+                            .font(.headline)
+                            .foregroundColor(AppTheme.navy)
+                        Spacer()
+
+                        Button(action: {
+                            Task { await viewModel.syncScheduleAndPrompts() }
+                        }) {
+                            if viewModel.isSyncingSchedule {
+                                ProgressView()
+                                    .scaleEffect(0.8)
+                            } else {
+                                HStack(spacing: 4) {
+                                    Image(systemName: "arrow.triangle.2.circlepath")
+                                    Text("Sync")
+                                }
+                                .font(.caption.bold())
+                                .foregroundColor(AppTheme.lightBlue)
+                            }
+                        }
+                        .disabled(viewModel.isSyncingSchedule)
+                    }
+
+                    Divider()
+
+                    if let rules = viewModel.samplingRules {
+                        scheduleInfoRow(
+                            label: "Sampling Mode",
+                            value: rules.mode.rawValue.capitalized
+                        )
+                        scheduleInfoRow(
+                            label: "Daily Window",
+                            value: "\(rules.dailySchedule.overallWindow.startTime) – \(rules.dailySchedule.overallWindow.endTime)"
+                        )
+                        scheduleInfoRow(
+                            label: "Completion Window",
+                            value: "\(rules.timeToCompleteMinutes) minutes from prompt"
+                        )
+                        scheduleInfoRow(
+                            label: "Total Prompts Today",
+                            value: "\(viewModel.todayDispatches.count) prompts scheduled"
+                        )
+
+                        if let next = viewModel.nextPrompt {
+                            scheduleInfoRow(
+                                label: "Next Scheduled Prompt",
+                                value: formatTime(next.dispatchTime)
+                            )
+                        } else {
+                            scheduleInfoRow(
+                                label: "Next Scheduled Prompt",
+                                value: "All today's prompts completed"
+                            )
+                        }
+                    } else {
+                        Text("Fetching sampling rules from server...")
+                            .font(.subheadline)
+                            .foregroundColor(.secondary)
+                    }
+                }
+                .padding()
+                .background(AppTheme.pureWhite)
+                .cornerRadius(16)
+                .overlay(RoundedRectangle(cornerRadius: 16).stroke(AppTheme.navy.opacity(0.1), lineWidth: 1))
+                .shadow(color: AppTheme.navy.opacity(0.04), radius: 6, x: 0, y: 2)
+
+                // 4. Notification Verification & Test Controls Card
+                VStack(alignment: .leading, spacing: 12) {
+                    HStack {
+                        Image(systemName: "bell.badge")
+                            .foregroundColor(AppTheme.lightBlue)
+                        Text("Notification & Window Verification")
+                            .font(.headline)
+                            .foregroundColor(AppTheme.navy)
+                    }
+
+                    Text("Verify notification delivery and active window countdown on this device:")
+                        .font(.caption)
+                        .foregroundColor(.secondary)
+
+                    Button(action: {
+                        Task { await viewModel.triggerTestPrompt(delaySeconds: 5) }
+                    }) {
+                        HStack {
+                            Image(systemName: "paperplane.fill")
+                            Text("Send Test Survey Notification (in 5s)")
+                        }
+                        .font(.subheadline.bold())
+                        .foregroundColor(AppTheme.navy)
+                        .frame(maxWidth: .infinity)
+                        .frame(height: 44)
+                        .background(AppTheme.lightBlue.opacity(0.15))
+                        .cornerRadius(10)
+                        .overlay(RoundedRectangle(cornerRadius: 10).stroke(AppTheme.lightBlue.opacity(0.4), lineWidth: 1))
+                    }
+                }
+                .padding()
+                .background(AppTheme.pureWhite)
+                .cornerRadius(16)
+                .overlay(RoundedRectangle(cornerRadius: 16).stroke(AppTheme.navy.opacity(0.1), lineWidth: 1))
+                .shadow(color: AppTheme.navy.opacity(0.04), radius: 6, x: 0, y: 2)
 
                 if viewModel.isLoading {
                     ProgressView("Loading prompt...")
@@ -132,9 +281,33 @@ public struct HomeView: View {
                         .padding()
                 }
 
-                Spacer()
+                Spacer(minLength: 20)
             }
             .padding()
         }
+    }
+
+    private func scheduleInfoRow(label: String, value: String) -> some View {
+        HStack {
+            Text(label)
+                .font(.subheadline)
+                .foregroundColor(.secondary)
+            Spacer()
+            Text(value)
+                .font(.subheadline.weight(.semibold))
+                .foregroundColor(AppTheme.navy)
+        }
+    }
+
+    private func timeString(from secs: Int) -> String {
+        let mins = secs / 60
+        let s = secs % 60
+        return String(format: "%02d:%02d", mins, s)
+    }
+
+    private func formatTime(_ date: Date) -> String {
+        let formatter = DateFormatter()
+        formatter.timeStyle = .short
+        return formatter.string(from: date)
     }
 }

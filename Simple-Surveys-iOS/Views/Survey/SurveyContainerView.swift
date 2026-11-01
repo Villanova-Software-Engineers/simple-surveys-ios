@@ -1,6 +1,7 @@
 import SwiftUI
 
 public struct SurveyContainerView: View {
+    @Environment(\.dismiss) private var dismiss
     @Bindable public var viewModel: SurveyViewModel
     @State private var showingCamera = false
 
@@ -22,8 +23,15 @@ public struct SurveyContainerView: View {
             .navigationTitle(viewModel.survey.title)
             .navigationBarTitleDisplayMode(.inline)
             .toolbar {
-                ToolbarItem(placement: .topBarTrailing) {
-                    TimerBadgeView(remainingSeconds: viewModel.remainingSeconds)
+                if #available(iOS 26.0, *) {
+                    ToolbarItem(placement: .topBarTrailing) {
+                        TimerBadgeView(remainingSeconds: viewModel.remainingSeconds)
+                    }
+                    .sharedBackgroundVisibility(.hidden)
+                } else {
+                    ToolbarItem(placement: .topBarTrailing) {
+                        TimerBadgeView(remainingSeconds: viewModel.remainingSeconds)
+                    }
                 }
             }
         }

@@ -18,7 +18,7 @@
                BlueprintIdentifier = "000000000000000100000000"
                BuildableName = "Simple-Surveys-IOS.app"
                BlueprintName = "Simple-Surveys-IOS"
-               ReferencedContainer = "container:Simple-Surveys-IOS-proj.xcodeproj">
+               ReferencedContainer = "container:Simple-Surveys-iOS.xcodeproj">
             </BuildableReference>
          </BuildActionEntry>
       </BuildActionEntries>
@@ -47,7 +47,8 @@
             BuildableIdentifier = "primary"
             BlueprintIdentifier = "000000000000000100000000"
             BuildableName = "Simple-Surveys-IOS.app"
-            ReferencedContainer = "container:Simple-Surveys-IOS-proj.xcodeproj">
+            BlueprintName = "Simple-Surveys-IOS"
+            ReferencedContainer = "container:Simple-Surveys-iOS.xcodeproj">
          </BuildableReference>
       </BuildableProductRunnable>
    </LaunchAction>
@@ -64,7 +65,7 @@
             BlueprintIdentifier = "000000000000000100000000"
             BuildableName = "Simple-Surveys-IOS.app"
             BlueprintName = "Simple-Surveys-IOS"
-            ReferencedContainer = "container:Simple-Surveys-IOS-proj.xcodeproj">
+            ReferencedContainer = "container:Simple-Surveys-iOS.xcodeproj">
          </BuildableReference>
       </BuildableProductRunnable>
    </ProfileAction>
