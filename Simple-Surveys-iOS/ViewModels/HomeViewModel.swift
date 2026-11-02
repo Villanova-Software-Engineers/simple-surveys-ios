@@ -25,7 +25,6 @@ public final class HomeViewModel {
     private var windowCountdownTask: Task<Void, Never>?
 
     private let repository: SurveyRepositoryProtocol
-    private let locationService: LocationServiceProtocol
     private let permissionManager: PermissionManagerProtocol
     private let scheduler: NotificationSchedulerProtocol
     private let locationService: LocationServiceProtocol
@@ -37,7 +36,6 @@ public final class HomeViewModel {
         locationService: LocationServiceProtocol
     ) {
         self.repository = repository
-        self.locationService = locationService
         self.permissionManager = permissionManager
         self.scheduler = scheduler
         self.locationService = locationService
