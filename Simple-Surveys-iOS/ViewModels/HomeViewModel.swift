@@ -14,6 +14,8 @@ public final class HomeViewModel {
     public var arePermissionsValid: Bool = true
     public var shouldOpenSurveySheet: Bool = false
     public var currentSurveyViewModel: SurveyViewModel?
+    public var showingLegalSheet: Bool = false
+    public var activeLegalTab: LegalTab = .terms
 
     // Scheduling state
     public var samplingRules: SamplingRules?
@@ -174,6 +176,11 @@ public final class HomeViewModel {
         self.windowCountdownTask?.cancel()
         self.activeWindowRemainingSeconds = 0
         updateNextPrompt()
+    }
+
+    public func openLegalDocument(_ tab: LegalTab) {
+        self.activeLegalTab = tab
+        self.showingLegalSheet = true
     }
 
     // MARK: - Private Helpers

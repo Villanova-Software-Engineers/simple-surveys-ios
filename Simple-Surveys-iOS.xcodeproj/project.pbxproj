@@ -56,6 +56,8 @@
 		B613C493307C989E003BE546 /* NotificationSchedulerProtocol.swift in Sources */ = {isa = PBXBuildFile; fileRef = B613C492307C989E003BE546 /* NotificationSchedulerProtocol.swift */; };
 		B613C495307C989E003BE546 /* NotificationScheduler.swift in Sources */ = {isa = PBXBuildFile; fileRef = B613C494307C989E003BE546 /* NotificationScheduler.swift */; };
 		B613C497307C989E003BE546 /* TermsAndConditionsView.swift in Sources */ = {isa = PBXBuildFile; fileRef = B613C496307C989E003BE546 /* TermsAndConditionsView.swift */; };
+		B613C498307C989E003BE546 /* PrivacyPolicyView.swift in Sources */ = {isa = PBXBuildFile; fileRef = B613C499307C989E003BE546 /* PrivacyPolicyView.swift */; };
+		B613C49A307C989E003BE546 /* LegalSheetView.swift in Sources */ = {isa = PBXBuildFile; fileRef = B613C49B307C989E003BE546 /* LegalSheetView.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -111,6 +113,8 @@
 		B613C492307C989E003BE546 /* NotificationSchedulerProtocol.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NotificationSchedulerProtocol.swift; sourceTree = "<group>"; };
 		B613C494307C989E003BE546 /* NotificationScheduler.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NotificationScheduler.swift; sourceTree = "<group>"; };
 		B613C496307C989E003BE546 /* TermsAndConditionsView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TermsAndConditionsView.swift; sourceTree = "<group>"; };
+		B613C499307C989E003BE546 /* PrivacyPolicyView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PrivacyPolicyView.swift; sourceTree = "<group>"; };
+		B613C49B307C989E003BE546 /* LegalSheetView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LegalSheetView.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -285,6 +289,8 @@
 				B613C442307C989E003BE546 /* OnboardingView.swift */,
 				B613C443307C989E003BE546 /* PermissionRevokedView.swift */,
 				B613C496307C989E003BE546 /* TermsAndConditionsView.swift */,
+				B613C499307C989E003BE546 /* PrivacyPolicyView.swift */,
+				B613C49B307C989E003BE546 /* LegalSheetView.swift */,
 			);
 			path = Onboarding;
 			sourceTree = "<group>";
@@ -461,6 +467,8 @@
 				B613C493307C989E003BE546 /* NotificationSchedulerProtocol.swift in Sources */,
 				B613C495307C989E003BE546 /* NotificationScheduler.swift in Sources */,
 				B613C497307C989E003BE546 /* TermsAndConditionsView.swift in Sources */,
+				B613C498307C989E003BE546 /* PrivacyPolicyView.swift in Sources */,
+				B613C49A307C989E003BE546 /* LegalSheetView.swift in Sources */,
 			);
 		};
 /* End PBXSourcesBuildPhase section */
