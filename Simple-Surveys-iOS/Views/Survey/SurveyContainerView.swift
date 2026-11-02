@@ -7,7 +7,6 @@ public struct SurveyContainerView: View {
 
     @State private var showingCamera = false
     @State private var showingCancelAlert = false
-    @Environment(\.dismiss) private var dismiss
 
     public init(viewModel: SurveyViewModel, onFinished: (() -> Void)? = nil) {
         self.viewModel = viewModel
@@ -18,15 +17,9 @@ public struct SurveyContainerView: View {
         NavigationStack {
             ZStack {
                 if viewModel.isExpired {
-                    ExpiredSurveyView {
-                        onFinished?()
-                        dismiss()
-                    }
+                    ExpiredSurveyView()
                 } else if viewModel.submissionCompleted {
-                    SurveyCompletedView {
-                        onFinished?()
-                        dismiss()
-                    }
+                    SurveyCompletedView()
                 } else {
                     surveyContent
                 }
