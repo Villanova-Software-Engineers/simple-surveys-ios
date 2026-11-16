@@ -131,6 +131,30 @@ public final class SurveyViewModel: Identifiable {
                         return
                     }
                 }
+
+                // Numeric min/max constraints
+                if question.type == .numeric {
+                    if let answer = answers[question.questionId] {
+                        var numValue: Double? = nil
+                        if case .double(let d) = answer { numValue = d }
+                        else if case .int(let i) = answer { numValue = Double(i) }
+
+                        if let val = numValue {
+                            if let max = question.validationRules?.maxValue, val > max {
+                                let maxStr = max.truncatingRemainder(dividingBy: 1) == 0 ? String(Int(max)) : String(max)
+                                errorMessage = "Answer for \"\(question.prompt)\" cannot exceed \(maxStr)."
+                                isSubmitting = false
+                                return
+                            }
+                            if let min = question.validationRules?.minValue, val < min {
+                                let minStr = min.truncatingRemainder(dividingBy: 1) == 0 ? String(Int(min)) : String(min)
+                                errorMessage = "Answer for \"\(question.prompt)\" must be at least \(minStr)."
+                                isSubmitting = false
+                                return
+                            }
+                        }
+                    }
+                }
             }
         }
 
