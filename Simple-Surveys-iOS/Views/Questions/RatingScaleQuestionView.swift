@@ -13,38 +13,69 @@ public struct RatingScaleQuestionView: View {
     private var maxValue: Int { Int(question.validationRules?.maxValue ?? 10) }
     private var step: Int { Int(question.validationRules?.step ?? 1) }
 
+    private var values: [Int] {
+        Array(stride(from: minValue, through: maxValue, by: step))
+    }
+
+    private var columns: [GridItem] {
+        let count = values.count
+        let columnCount = count > 5 ? 5 : count
+        return Array(repeating: GridItem(.flexible(), spacing: 8), count: columnCount)
+    }
+
     public var body: some View {
         VStack(alignment: .leading, spacing: 14) {
-            Text(question.prompt)
-                .font(.headline)
-                .foregroundColor(AppTheme.navy)
+            HStack(alignment: .top) {
+                Text(question.prompt)
+                    .font(.headline)
+                    .foregroundColor(AppTheme.navy)
 
-            ScrollView(.horizontal, showsIndicators: false) {
-                HStack(spacing: 8) {
-                    ForEach(Array(stride(from: minValue, through: maxValue, by: step)), id: \.self) { value in
-                        Button(action: { answer = .int(value) }) {
-                            Text("\(value)")
-                                .font(.body.bold())
-                                .frame(width: 44, height: 44)
-                                .background(selectedInt == value ? AppTheme.navy : Color(.secondarySystemBackground))
-                                .foregroundColor(selectedInt == value ? AppTheme.pureWhite : AppTheme.navy)
-                                .clipShape(Circle())
-                                .overlay(
-                                    Circle()
-                                        .stroke(selectedInt == value ? AppTheme.lightBlue : Color.clear, lineWidth: 2)
-                                )
-                        }
+                Spacer()
+
+                if let selected = selectedInt {
+                    HStack(spacing: 4) {
+                        Text("Rating:")
+                            .font(.caption)
+                            .foregroundColor(.secondary)
+                        Text("\(selected)")
+                            .font(.caption.bold())
+                            .foregroundColor(AppTheme.navy)
                     }
+                    .padding(.horizontal, 8)
+                    .padding(.vertical, 3)
+                    .background(AppTheme.lightBlue.opacity(0.15))
+                    .clipShape(Capsule())
                 }
-                .padding(.vertical, 4)
+            }
+
+            LazyVGrid(columns: columns, spacing: 8) {
+                ForEach(values, id: \.self) { value in
+                    Button(action: {
+                        UIImpactFeedbackGenerator(style: .light).impactOccurred()
+                        answer = .int(value)
+                    }) {
+                        Text("\(value)")
+                            .font(.body.bold())
+                            .frame(maxWidth: .infinity)
+                            .frame(height: 44)
+                            .background(selectedInt == value ? AppTheme.navy : Color(.secondarySystemBackground))
+                            .foregroundColor(selectedInt == value ? AppTheme.pureWhite : AppTheme.navy)
+                            .clipShape(RoundedRectangle(cornerRadius: 10))
+                            .overlay(
+                                RoundedRectangle(cornerRadius: 10)
+                                    .stroke(selectedInt == value ? AppTheme.lightBlue : Color.clear, lineWidth: 2)
+                            )
+                    }
+                    .buttonStyle(.plain)
+                }
             }
 
             if let minLabel = question.validationRules?.minLabel,
                let maxLabel = question.validationRules?.maxLabel {
                 HStack {
-                    Text(minLabel).font(.caption).foregroundColor(.secondary)
+                    Text("\(minValue) = \(minLabel)").font(.caption).foregroundColor(.secondary)
                     Spacer()
-                    Text(maxLabel).font(.caption).foregroundColor(.secondary)
+                    Text("\(maxValue) = \(maxLabel)").font(.caption).foregroundColor(.secondary)
                 }
             }
         }
