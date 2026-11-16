@@ -48,8 +48,9 @@ public struct HomeView: View {
     }
 
     private var mainContent: some View {
-        ScrollView {
-            VStack(spacing: 20) {
+        VStack(spacing: 0) {
+            ScrollView {
+                VStack(spacing: 20) {
                 // Warning banner if NOT synced with server
                 if let error = viewModel.errorMessage {
                     HStack(spacing: 8) {
@@ -199,10 +200,9 @@ public struct HomeView: View {
                     ProgressView("Loading prompt...")
                         .padding()
                 }
-
-                Spacer(minLength: 20)
             }
             .padding()
+        }
 
             Spacer(minLength: 0)
 
@@ -224,7 +224,8 @@ public struct HomeView: View {
                 .clipShape(Capsule())
             }
             .padding(.horizontal)
-            .padding(.bottom, 16)
+            .padding(.bottom, 12)
+            .padding(.top, 4)
         }
     }
 }
