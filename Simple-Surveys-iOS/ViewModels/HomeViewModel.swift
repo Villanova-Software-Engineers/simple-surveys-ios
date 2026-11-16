@@ -65,11 +65,10 @@ public final class HomeViewModel {
                 self.todayDispatches = dispatches
                 self.updateNextPrompt()
                 self.isSyncingSchedule = false
-                self.statusBanner = "Sampling schedule synced with server."
             }
         } catch {
             await MainActor.run {
-                self.errorMessage = "Failed to sync schedule from server: \(error.localizedDescription)"
+                self.errorMessage = "Schedule not synced with server."
                 self.isSyncingSchedule = false
             }
         }

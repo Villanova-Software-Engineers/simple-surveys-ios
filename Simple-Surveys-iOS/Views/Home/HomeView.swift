@@ -50,7 +50,34 @@ public struct HomeView: View {
     private var mainContent: some View {
         ScrollView {
             VStack(spacing: 20) {
-                // Status banner if present
+                // Warning banner if NOT synced with server
+                if let error = viewModel.errorMessage {
+                    HStack(spacing: 8) {
+                        Image(systemName: "exclamationmark.triangle.fill")
+                            .foregroundColor(AppTheme.gold)
+                        Text(error)
+                            .font(.footnote.weight(.medium))
+                            .foregroundColor(AppTheme.navy)
+                        Spacer()
+                        Button(action: {
+                            Task { await viewModel.syncScheduleAndPrompts() }
+                        }) {
+                            Text("Retry")
+                                .font(.caption.bold())
+                                .foregroundColor(AppTheme.lightBlue)
+                        }
+                        Button(action: { viewModel.errorMessage = nil }) {
+                            Image(systemName: "xmark")
+                                .font(.caption2)
+                                .foregroundColor(.secondary)
+                        }
+                    }
+                    .padding(12)
+                    .background(AppTheme.gold.opacity(0.12))
+                    .cornerRadius(10)
+                }
+
+                // Status banner if present (e.g. survey completion receipt)
                 if let banner = viewModel.statusBanner {
                     HStack(spacing: 8) {
                         Image(systemName: "checkmark.circle.fill")
