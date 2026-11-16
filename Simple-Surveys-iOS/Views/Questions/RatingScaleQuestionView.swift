@@ -17,12 +17,6 @@ public struct RatingScaleQuestionView: View {
         Array(stride(from: minValue, through: maxValue, by: step))
     }
 
-    private var columns: [GridItem] {
-        let count = values.count
-        let columnCount = count > 5 ? 5 : count
-        return Array(repeating: GridItem(.flexible(), spacing: 8), count: columnCount)
-    }
-
     public var body: some View {
         VStack(alignment: .leading, spacing: 14) {
             HStack(alignment: .top) {
@@ -30,12 +24,12 @@ public struct RatingScaleQuestionView: View {
                     .font(.headline)
                     .foregroundColor(AppTheme.navy)
 
-                Spacer()
+                Spacer(minLength: 8)
 
                 if let selected = selectedInt {
                     HStack(spacing: 4) {
                         Text("Rating:")
-                            .font(.caption)
+                            .font(.caption2)
                             .foregroundColor(.secondary)
                         Text("\(selected)")
                             .font(.caption.bold())
@@ -48,21 +42,22 @@ public struct RatingScaleQuestionView: View {
                 }
             }
 
-            LazyVGrid(columns: columns, spacing: 8) {
+            // Single line bar fitting all numbers without scrolling
+            HStack(spacing: 4) {
                 ForEach(values, id: \.self) { value in
                     Button(action: {
                         UIImpactFeedbackGenerator(style: .light).impactOccurred()
                         answer = .int(value)
                     }) {
                         Text("\(value)")
-                            .font(.body.bold())
+                            .font(.system(size: values.count > 7 ? 13 : 15, weight: .bold))
                             .frame(maxWidth: .infinity)
-                            .frame(height: 44)
+                            .frame(height: 38)
                             .background(selectedInt == value ? AppTheme.navy : Color(.secondarySystemBackground))
                             .foregroundColor(selectedInt == value ? AppTheme.pureWhite : AppTheme.navy)
-                            .clipShape(RoundedRectangle(cornerRadius: 10))
+                            .clipShape(RoundedRectangle(cornerRadius: 8))
                             .overlay(
-                                RoundedRectangle(cornerRadius: 10)
+                                RoundedRectangle(cornerRadius: 8)
                                     .stroke(selectedInt == value ? AppTheme.lightBlue : Color.clear, lineWidth: 2)
                             )
                     }
@@ -73,13 +68,14 @@ public struct RatingScaleQuestionView: View {
             if let minLabel = question.validationRules?.minLabel,
                let maxLabel = question.validationRules?.maxLabel {
                 HStack {
-                    Text("\(minValue) = \(minLabel)").font(.caption).foregroundColor(.secondary)
+                    Text("\(minValue) = \(minLabel)").font(.caption2).foregroundColor(.secondary)
                     Spacer()
-                    Text("\(maxValue) = \(maxLabel)").font(.caption).foregroundColor(.secondary)
+                    Text("\(maxValue) = \(maxLabel)").font(.caption2).foregroundColor(.secondary)
                 }
             }
         }
-        .padding()
+        .padding(.horizontal, 12)
+        .padding(.vertical, 14)
         .background(AppTheme.pureWhite)
         .cornerRadius(12)
         .shadow(color: AppTheme.navy.opacity(0.05), radius: 5, x: 0, y: 2)
