@@ -11,75 +11,72 @@ public struct OnboardingView: View {
         ZStack {
             AppTheme.canvasBackground.ignoresSafeArea()
 
-            ScrollView {
-                VStack(spacing: 24) {
-                    Spacer(minLength: 20)
+            ScrollView(showsIndicators: false) {
+                VStack(spacing: 14) {
+                    Spacer(minLength: 6)
 
                     // Header Icon
                     ZStack {
                         Circle()
                             .fill(AppTheme.navy.opacity(0.1))
-                            .frame(width: 88, height: 88)
+                            .frame(width: 64, height: 64)
                         Image(systemName: "checklist.checked")
-                            .font(.system(size: 42))
+                            .font(.system(size: 30))
                             .foregroundColor(AppTheme.navy)
                     }
 
                     // Welcome Title
-                    VStack(spacing: 6) {
+                    VStack(spacing: 4) {
                         Text("Simple Surveys")
-                            .font(.largeTitle.bold())
+                            .font(.title2.bold())
                             .foregroundColor(AppTheme.navy)
 
                         Text("Experience Sampling Study")
-                            .font(.subheadline.weight(.semibold))
+                            .font(.caption.weight(.semibold))
                             .foregroundColor(AppTheme.gold)
                             .textCase(.uppercase)
                     }
 
                     // Study Participation Requirements Card
-                    VStack(alignment: .leading, spacing: 14) {
+                    VStack(alignment: .leading, spacing: 10) {
                         Text("Study Requirements")
-                            .font(.headline)
+                            .font(.subheadline.bold())
                             .foregroundColor(AppTheme.navy)
-
-                        Text("Simple Surveys gathers momentary experiences during your everyday routine. To participate, the app requires:")
-                            .font(.subheadline)
-                            .foregroundColor(.primary)
 
                         Divider()
 
                         permissionRow(
                             icon: "bell.badge.fill",
                             title: "Push Notifications",
-                            detail: "Alerts you during active survey sampling windows."
+                            detail: "Alerts for active survey windows."
                         )
                         permissionRow(
                             icon: "location.fill",
                             title: "GPS Location",
-                            detail: "Attaches approximate coordinates at the moment of submission."
+                            detail: "Captured only upon survey submission."
                         )
                         permissionRow(
                             icon: "camera.fill",
                             title: "Camera Access",
-                            detail: "Allows you to capture an image of your immediate surroundings."
+                            detail: "Optional photos of your surroundings."
                         )
                     }
-                    .padding(20)
+                    .padding(.horizontal, 16)
+                    .padding(.vertical, 12)
                     .background(AppTheme.pureWhite)
-                    .cornerRadius(16)
-                    .overlay(RoundedRectangle(cornerRadius: 16).stroke(AppTheme.navy.opacity(0.1), lineWidth: 1))
-                    .shadow(color: AppTheme.navy.opacity(0.05), radius: 8, x: 0, y: 3)
+                    .cornerRadius(14)
+                    .overlay(RoundedRectangle(cornerRadius: 14).stroke(AppTheme.navy.opacity(0.1), lineWidth: 1))
+                    .shadow(color: AppTheme.navy.opacity(0.04), radius: 6, x: 0, y: 2)
                     .padding(.horizontal, 20)
 
                     // Terms and Conditions Agreement Card
-                    VStack(alignment: .leading, spacing: 14) {
+                    VStack(alignment: .leading, spacing: 10) {
                         HStack {
                             Image(systemName: "hand.raised.square.fill")
                                 .foregroundColor(AppTheme.gold)
-                                .font(.title3)
+                                .font(.subheadline)
                             Text("Terms & Informed Consent")
-                                .font(.headline)
+                                .font(.subheadline.bold())
                                 .foregroundColor(AppTheme.navy)
                             Spacer()
                             Button("View Details") {
@@ -89,21 +86,20 @@ public struct OnboardingView: View {
                             .foregroundColor(AppTheme.lightBlue)
                         }
 
-                        Text("Your privacy is strictly protected. Submissions are anonymous, with zero personal identifying information collected. An anonymous device token will be registered to deliver scheduled survey prompts.")
-                            .font(.footnote)
+                        Text("Submissions are anonymous. No personal identifying information is collected.")
+                            .font(.caption)
                             .foregroundColor(.secondary)
-                            .lineSpacing(2)
 
                         Divider()
 
                         // Interactive Acceptance Checkbox
                         Button(action: { viewModel.toggleTermsAcceptance() }) {
-                            HStack(alignment: .top, spacing: 12) {
+                            HStack(spacing: 10) {
                                 Image(systemName: viewModel.isTermsAccepted ? "checkmark.square.fill" : "square")
                                     .font(.title3)
                                     .foregroundColor(viewModel.isTermsAccepted ? AppTheme.lightBlue : .secondary)
 
-                                Text("I have read, understood, and accept the Terms & Conditions and Informed Consent.")
+                                Text("I accept the Terms & Conditions and Informed Consent.")
                                     .font(.footnote.weight(.medium))
                                     .foregroundColor(.primary)
                                     .multilineTextAlignment(.leading)
@@ -111,14 +107,15 @@ public struct OnboardingView: View {
                         }
                         .buttonStyle(.plain)
                     }
-                    .padding(20)
+                    .padding(.horizontal, 16)
+                    .padding(.vertical, 12)
                     .background(AppTheme.pureWhite)
-                    .cornerRadius(16)
+                    .cornerRadius(14)
                     .overlay(
-                        RoundedRectangle(cornerRadius: 16)
+                        RoundedRectangle(cornerRadius: 14)
                             .stroke(viewModel.isTermsAccepted ? AppTheme.lightBlue : AppTheme.gold.opacity(0.3), lineWidth: 1.5)
                     )
-                    .shadow(color: AppTheme.navy.opacity(0.05), radius: 8, x: 0, y: 3)
+                    .shadow(color: AppTheme.navy.opacity(0.04), radius: 6, x: 0, y: 2)
                     .padding(.horizontal, 20)
 
                     // Status and Error Messages
@@ -134,7 +131,7 @@ public struct OnboardingView: View {
                     }
 
                     if let error = viewModel.errorMessage {
-                        VStack(spacing: 8) {
+                        VStack(spacing: 6) {
                             Text(error)
                                 .font(.footnote)
                                 .foregroundColor(.red)
@@ -150,8 +147,6 @@ public struct OnboardingView: View {
                         }
                         .padding(.horizontal, 24)
                     }
-
-                    Spacer(minLength: 10)
 
                     // Accept and Register Button
                     Button(action: {
@@ -173,13 +168,14 @@ public struct OnboardingView: View {
                             }
                         }
                         .frame(maxWidth: .infinity)
-                        .frame(height: 52)
+                        .frame(height: 50)
                         .background(viewModel.isTermsAccepted ? AppTheme.navy : Color.gray.opacity(0.5))
                         .cornerRadius(14)
                     }
                     .disabled(!viewModel.isTermsAccepted || viewModel.isRequesting || viewModel.isRegisteringDevice)
-                    .padding(.horizontal, 24)
-                    .padding(.bottom, 24)
+                    .padding(.horizontal, 20)
+                    .padding(.top, 4)
+                    .padding(.bottom, 16)
                 }
             }
         }
@@ -189,12 +185,12 @@ public struct OnboardingView: View {
     }
 
     private func permissionRow(icon: String, title: String, detail: String) -> some View {
-        HStack(alignment: .top, spacing: 12) {
+        HStack(spacing: 10) {
             Image(systemName: icon)
-                .font(.title3)
+                .font(.body)
                 .foregroundColor(AppTheme.lightBlue)
-                .frame(width: 28)
-            VStack(alignment: .leading, spacing: 2) {
+                .frame(width: 24)
+            VStack(alignment: .leading, spacing: 1) {
                 Text(title)
                     .font(.subheadline.bold())
                     .foregroundColor(AppTheme.navy)
