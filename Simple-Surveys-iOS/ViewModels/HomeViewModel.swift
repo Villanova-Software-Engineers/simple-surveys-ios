@@ -28,18 +28,15 @@ public final class HomeViewModel {
 
     private let repository: SurveyRepositoryProtocol
     private let permissionManager: PermissionManagerProtocol
-    private let scheduler: NotificationSchedulerProtocol
     private let locationService: LocationServiceProtocol
 
     public init(
         repository: SurveyRepositoryProtocol,
         permissionManager: PermissionManagerProtocol,
-        scheduler: NotificationSchedulerProtocol,
         locationService: LocationServiceProtocol
     ) {
         self.repository = repository
         self.permissionManager = permissionManager
-        self.scheduler = scheduler
         self.locationService = locationService
     }
 
@@ -50,20 +47,17 @@ public final class HomeViewModel {
         }
     }
 
-    /// Synchronizes sampling rules from the backend (GET /api/notifications/schedule) and schedules daily prompts
+    /// Synchronizes sampling rules from the backend (GET /api/notifications/schedule)
     public func syncScheduleAndPrompts() async {
         isSyncingSchedule = true
         errorMessage = nil
 
         do {
             let rules = try await repository.fetchScheduleConfig()
-            let dispatches = try await scheduler.scheduleDailyNotifications()
 
             await MainActor.run {
                 self.samplingRules = rules
                 self.timeToCompleteMinutes = rules.timeToCompleteMinutes
-                self.todayDispatches = dispatches
-                self.updateNextPrompt()
                 self.isSyncingSchedule = false
             }
         } catch {
@@ -74,25 +68,16 @@ public final class HomeViewModel {
         }
     }
 
-    /// Triggers an immediate test prompt scheduled in `delaySeconds` for prompt and window verification
-    public func triggerTestPrompt(delaySeconds: TimeInterval = 5) async {
-        errorMessage = nil
-        do {
-            let testDispatch = try await scheduler.scheduleTestPrompt(
-                surveyId: nil,
-                delaySeconds: delaySeconds
-            )
-            await MainActor.run {
-                self.statusBanner = "Test notification scheduled in \(Int(delaySeconds))s (Survey: \(testDispatch.surveyId))."
-            }
-        } catch {
-            await MainActor.run {
-                self.errorMessage = "Failed to schedule test prompt: \(error.localizedDescription)"
-            }
-        }
+    /// Simulates receiving an APNs prompt for a test survey (fetched directly from backend)
+    public func simulateSurveyNotification(surveyId: String) async {
+        await handleIncomingSurveyPrompt(
+            surveyId: surveyId,
+            sentAt: Date(),
+            autoOpen: true
+        )
     }
 
-    /// Handles an incoming survey prompt from local schedule, APNs banner, or notification tap
+    /// Handles an incoming survey prompt from APNs banner or notification tap
     public func handleIncomingSurveyPrompt(
         surveyId: String,
         sentAt: Date?,

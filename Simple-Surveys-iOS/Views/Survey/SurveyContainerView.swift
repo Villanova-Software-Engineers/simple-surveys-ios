@@ -1,7 +1,6 @@
 import SwiftUI
 
 public struct SurveyContainerView: View {
-    @Environment(\.dismiss) private var dismiss
     @Bindable public var viewModel: SurveyViewModel
     public var onFinished: (() -> Void)? = nil
 
@@ -24,7 +23,7 @@ public struct SurveyContainerView: View {
                     surveyContent
                 }
             }
-            .navigationTitle(viewModel.survey.title)
+            .navigationTitle(viewModel.currentTitle)
             .navigationBarTitleDisplayMode(.inline)
             .toolbar {
                 if #available(iOS 26.0, *) {
@@ -42,7 +41,6 @@ public struct SurveyContainerView: View {
                 Button("Keep Answering", role: .cancel) {}
                 Button("Exit", role: .destructive) {
                     onFinished?()
-                    dismiss()
                 }
             } message: {
                 Text("Your progress on this prompt will not be submitted.")
@@ -58,8 +56,33 @@ public struct SurveyContainerView: View {
     private var surveyContent: some View {
         ScrollView {
             VStack(spacing: 16) {
-                // Description header
-                if let desc = viewModel.survey.description {
+                // Adaptive Researcher Dialogue Banner or Initial Survey Description
+                if viewModel.isFollowUpRound, let researcherMessage = viewModel.researcherMessage {
+                    HStack(alignment: .top, spacing: 12) {
+                        Image(systemName: "text.bubble.fill")
+                            .font(.title2)
+                            .foregroundColor(AppTheme.navy)
+                            .padding(.top, 2)
+
+                        VStack(alignment: .leading, spacing: 4) {
+                            Text("Researcher Note")
+                                .font(.caption.bold())
+                                .foregroundColor(AppTheme.navy)
+                                .textCase(.uppercase)
+
+                            Text(researcherMessage)
+                                .font(.subheadline)
+                                .foregroundColor(AppTheme.navy)
+                                .lineSpacing(2)
+                        }
+
+                        Spacer()
+                    }
+                    .padding()
+                    .background(AppTheme.gold.opacity(0.15))
+                    .cornerRadius(12)
+                    .padding(.horizontal)
+                } else if let desc = viewModel.survey.description {
                     Text(desc)
                         .font(.subheadline)
                         .foregroundColor(.secondary)
@@ -67,19 +90,24 @@ public struct SurveyContainerView: View {
                         .padding(.horizontal)
                 }
 
-                // Dynamic questions
-                ForEach(viewModel.survey.questions) { question in
-                    questionView(for: question)
-                        .padding(.horizontal)
+                // Dynamic questions: renders initial survey or active follow-up questions
+                ForEach(viewModel.currentQuestions) { question in
+                    let isVisible = viewModel.gatingVisibilityMap[question.questionId] ?? (question.gatingRule == nil)
+                    if isVisible {
+                        questionView(for: question)
+                            .padding(.horizontal)
+                    }
                 }
 
-                // Photo capture card
-                PhotoPreviewCard(
-                    image: viewModel.capturedImage?.previewImage,
-                    onTapCapture: { showingCamera = true },
-                    onTapRemove: { viewModel.capturedImage = nil }
-                )
-                .padding(.horizontal)
+                // Photo capture card (Phase 1 intake only)
+                if !viewModel.isFollowUpRound {
+                    PhotoPreviewCard(
+                        image: viewModel.capturedImage?.previewImage,
+                        onTapCapture: { showingCamera = true },
+                        onTapRemove: { viewModel.capturedImage = nil }
+                    )
+                    .padding(.horizontal)
+                }
 
                 // Error message banner
                 if let err = viewModel.errorMessage {
@@ -94,25 +122,37 @@ public struct SurveyContainerView: View {
                         .padding(.horizontal)
                 }
 
-                // Submit button
+                // Submit button (Fixed size with spinner centered inside)
                 Button(action: { Task { await viewModel.submitResponse() } }) {
-                    if viewModel.isSubmitting {
-                        ProgressView().tint(AppTheme.pureWhite)
-                    } else {
-                        Text("Submit Survey")
-                            .font(.headline)
-                            .foregroundColor(AppTheme.pureWhite)
-                            .frame(maxWidth: .infinity)
+                    HStack {
+                        if viewModel.isSubmitting {
+                            ProgressView()
+                                .tint(AppTheme.pureWhite)
+                        } else {
+                            Text(viewModel.isFollowUpRound ? "Complete Follow-up" : "Submit Survey")
+                                .font(.headline)
+                                .foregroundColor(AppTheme.pureWhite)
+                        }
                     }
+                    .frame(maxWidth: .infinity)
+                    .frame(height: 50)
                 }
-                .frame(height: 50)
                 .background(AppTheme.navy)
                 .cornerRadius(12)
-                .padding()
+                .padding(.horizontal)
                 .disabled(viewModel.isSubmitting)
             }
             .padding(.vertical)
+            .id(viewModel.activeFollowUp?.roundNumber ?? 0)
         }
+        .scrollDismissesKeyboard(.interactively)
+        .background(
+            Color.clear
+                .contentShape(Rectangle())
+                .onTapGesture {
+                    UIApplication.shared.sendAction(#selector(UIResponder.resignFirstResponder), to: nil, from: nil, for: nil)
+                }
+        )
     }
 
     @ViewBuilder
@@ -125,7 +165,17 @@ public struct SurveyContainerView: View {
         case .multipleChoice:
             MultipleChoiceQuestionView(question: q, answer: binding(for: q.questionId))
         case .text:
-            TextQuestionView(question: q, answer: binding(for: q.questionId))
+            TextQuestionView(
+                question: q,
+                answer: binding(for: q.questionId),
+                onTextChanged: { text in
+                    viewModel.handleTextChanged(questionId: q.questionId, newText: text)
+                },
+                onBlur: { text in
+                    viewModel.handleTextFieldBlur(questionId: q.questionId, currentText: text)
+                },
+                gatingScoreInfo: viewModel.gatingScores[q.questionId]
+            )
         case .numeric:
             NumericQuestionView(question: q, answer: binding(for: q.questionId))
         }
@@ -135,6 +185,7 @@ public struct SurveyContainerView: View {
         Binding(
             get: { viewModel.answers[id] },
             set: { val in
+                viewModel.recordInteraction()
                 if let val = val {
                     viewModel.answers[id] = val
                 } else {

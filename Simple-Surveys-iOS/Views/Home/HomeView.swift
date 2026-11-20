@@ -196,6 +196,9 @@ public struct HomeView: View {
                     .shadow(color: AppTheme.navy.opacity(0.04), radius: 6, x: 0, y: 2)
                 }
 
+                // 3. Developer / Testing Tools Section
+                developerTestingToolsSection
+
                 if viewModel.isLoading {
                     ProgressView("Loading prompt...")
                         .padding()
@@ -227,5 +230,108 @@ public struct HomeView: View {
             .padding(.bottom, 12)
             .padding(.top, 4)
         }
+    }
+
+    // MARK: - Developer / Testing Tools Section
+
+    private var developerTestingToolsSection: some View {
+        VStack(alignment: .leading, spacing: 14) {
+            HStack {
+                Image(systemName: "wrench.and.screwdriver.fill")
+                    .foregroundColor(AppTheme.navy)
+                Text("Developer Testing Tools")
+                    .font(.headline)
+                    .foregroundColor(AppTheme.navy)
+                Spacer()
+                Text("[DEV TEST]")
+                    .font(.caption2.bold())
+                    .padding(.horizontal, 8)
+                    .padding(.vertical, 3)
+                    .background(AppTheme.navy.opacity(0.08))
+                    .foregroundColor(AppTheme.navy)
+                    .clipShape(Capsule())
+            }
+
+            Text("Simulate incoming notifications for testing. Surveys are fetched directly from the backend:")
+                .font(.footnote)
+                .foregroundColor(.secondary)
+                .lineSpacing(2)
+
+            VStack(spacing: 10) {
+                Button(action: {
+                    Task {
+                        await viewModel.simulateSurveyNotification(surveyId: "daily_wellbeing_adaptive")
+                    }
+                }) {
+                    HStack(spacing: 12) {
+                        Image(systemName: "sparkles")
+                            .font(.body.weight(.semibold))
+                            .foregroundColor(AppTheme.pureWhite)
+                            .frame(width: 34, height: 34)
+                            .background(AppTheme.lightBlue)
+                            .clipShape(Circle())
+
+                        VStack(alignment: .leading, spacing: 2) {
+                            Text("Simulate Notification: Daily Well-being")
+                                .font(.subheadline.bold())
+                                .foregroundColor(AppTheme.navy)
+                            Text("ID: daily_wellbeing_adaptive • Fetched from backend")
+                                .font(.caption2)
+                                .foregroundColor(.secondary)
+                        }
+
+                        Spacer()
+
+                        Image(systemName: "arrow.right.circle.fill")
+                            .font(.title3)
+                            .foregroundColor(AppTheme.lightBlue)
+                    }
+                    .padding(12)
+                    .background(AppTheme.canvasBackground)
+                    .cornerRadius(12)
+                }
+                .buttonStyle(.plain)
+
+                Button(action: {
+                    Task {
+                        await viewModel.simulateSurveyNotification(surveyId: "simple_gated_survey")
+                    }
+                }) {
+                    HStack(spacing: 12) {
+                        Image(systemName: "arrow.triangle.branch")
+                            .font(.body.weight(.semibold))
+                            .foregroundColor(AppTheme.pureWhite)
+                            .frame(width: 34, height: 34)
+                            .background(AppTheme.gold)
+                            .clipShape(Circle())
+
+                        VStack(alignment: .leading, spacing: 2) {
+                            Text("Simulate Notification: Simple Gated")
+                                .font(.subheadline.bold())
+                                .foregroundColor(AppTheme.navy)
+                            Text("ID: simple_gated_survey • Fetched from backend")
+                                .font(.caption2)
+                                .foregroundColor(.secondary)
+                        }
+
+                        Spacer()
+
+                        Image(systemName: "arrow.right.circle.fill")
+                            .font(.title3)
+                            .foregroundColor(AppTheme.gold)
+                    }
+                    .padding(12)
+                    .background(AppTheme.canvasBackground)
+                    .cornerRadius(12)
+                }
+                .buttonStyle(.plain)
+            }
+        }
+        .padding()
+        .frame(maxWidth: .infinity, alignment: .leading)
+        .background(AppTheme.pureWhite)
+        .cornerRadius(16)
+        .overlay(RoundedRectangle(cornerRadius: 16).stroke(AppTheme.navy.opacity(0.1), lineWidth: 1))
+        .shadow(color: AppTheme.navy.opacity(0.04), radius: 6, x: 0, y: 2)
     }
 }
