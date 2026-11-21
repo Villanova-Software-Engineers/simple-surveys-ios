@@ -4,8 +4,6 @@
 [![Swift](https://img.shields.io/badge/Swift-5.9%2B-orange.svg?style=flat-square&logo=swift)](https://swift.org)
 [![UI Framework](https://img.shields.io/badge/UI-SwiftUI-purple.svg?style=flat-square&logo=swift)](https://developer.apple.com/xcode/swiftui/)
 [![ML Engine](https://img.shields.io/badge/Inference-ONNX%20Runtime%20Mobile-green.svg?style=flat-square&logo=onnx)](https://onnxruntime.ai)
-[![Architecture](https://img.shields.io/badge/Architecture-MVVM%20%2B%20Repository-teal.svg?style=flat-square)](#architecture--data-flow)
-[![License](https://img.shields.io/badge/License-MIT-lightgrey.svg?style=flat-square)](#license)
 
 A high-performance, native iOS client built with **Swift** and **SwiftUI** for rigorous **Experience Sampling Method (ESM)** and **Ecological Momentary Assessment (EMA)** research studies. 
 
