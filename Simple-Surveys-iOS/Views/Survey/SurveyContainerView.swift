@@ -64,16 +64,23 @@ public struct SurveyContainerView: View {
                             .foregroundColor(AppTheme.navy)
                             .padding(.top, 2)
 
-                        VStack(alignment: .leading, spacing: 4) {
-                            Text("Researcher Note")
-                                .font(.caption.bold())
-                                .foregroundColor(AppTheme.navy)
-                                .textCase(.uppercase)
+                        VStack(alignment: .leading, spacing: 6) {
+                            VStack(alignment: .leading, spacing: 2) {
+                                Text("Adaptive AI Check-in Note")
+                                    .font(.caption.bold())
+                                    .foregroundColor(AppTheme.navy)
+                                    .textCase(.uppercase)
+
+                                Text("Generated automatically based on your survey responses.")
+                                    .font(.caption2)
+                                    .foregroundColor(AppTheme.navy.opacity(0.65))
+                            }
 
                             Text(researcherMessage)
                                 .font(.subheadline)
                                 .foregroundColor(AppTheme.navy)
                                 .lineSpacing(2)
+                                .padding(.top, 2)
                         }
 
                         Spacer()
