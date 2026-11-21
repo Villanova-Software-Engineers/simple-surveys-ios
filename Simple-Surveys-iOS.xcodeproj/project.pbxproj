@@ -53,12 +53,33 @@
 		B613C47F307C989E003BE546 /* CameraViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = B613C434307C989E003BE546 /* CameraViewModel.swift */; };
 		B613C482307C989E003BE546 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = B613C420307C989E003BE546 /* Assets.xcassets */; };
 		B613C491307C989E003BE546 /* NotificationConfig.swift in Sources */ = {isa = PBXBuildFile; fileRef = B613C490307C989E003BE546 /* NotificationConfig.swift */; };
-		B613C493307C989E003BE546 /* NotificationSchedulerProtocol.swift in Sources */ = {isa = PBXBuildFile; fileRef = B613C492307C989E003BE546 /* NotificationSchedulerProtocol.swift */; };
-		B613C495307C989E003BE546 /* NotificationScheduler.swift in Sources */ = {isa = PBXBuildFile; fileRef = B613C494307C989E003BE546 /* NotificationScheduler.swift */; };
 		B613C497307C989E003BE546 /* TermsAndConditionsView.swift in Sources */ = {isa = PBXBuildFile; fileRef = B613C496307C989E003BE546 /* TermsAndConditionsView.swift */; };
 		B613C498307C989E003BE546 /* PrivacyPolicyView.swift in Sources */ = {isa = PBXBuildFile; fileRef = B613C499307C989E003BE546 /* PrivacyPolicyView.swift */; };
 		B613C49A307C989E003BE546 /* LegalSheetView.swift in Sources */ = {isa = PBXBuildFile; fileRef = B613C49B307C989E003BE546 /* LegalSheetView.swift */; };
+		B65C8E2430AFFBE9002BCA43 /* FRONTEND_FOLLOWUP_AND_TIMER_PLAN.md in Resources */ = {isa = PBXBuildFile; fileRef = B65C8E2330AFFBE9002BCA43 /* FRONTEND_FOLLOWUP_AND_TIMER_PLAN.md */; };
+		B6AD166130AEAFC700BD9145 /* FRONTEND_GATING_IMPLEMENTATION_PLAN.md in Resources */ = {isa = PBXBuildFile; fileRef = B6AD166030AEAFC700BD9145 /* FRONTEND_GATING_IMPLEMENTATION_PLAN.md */; };
+		B6AD166430AEB0F700BD9145 /* OnDeviceGatingServiceProtocol.swift in Sources */ = {isa = PBXBuildFile; fileRef = B6AD166330AEB0F700BD9145 /* OnDeviceGatingServiceProtocol.swift */; };
+		B6AD166630AEB0FD00BD9145 /* OnDeviceGatingService.swift in Sources */ = {isa = PBXBuildFile; fileRef = B6AD166530AEB0FD00BD9145 /* OnDeviceGatingService.swift */; };
+		B6AD166830AEB10100BD9145 /* GatingProfiler.swift in Sources */ = {isa = PBXBuildFile; fileRef = B6AD166730AEB10100BD9145 /* GatingProfiler.swift */; };
+		B6AD166A30AEB11200BD9145 /* DynamicSurveyView.swift in Sources */ = {isa = PBXBuildFile; fileRef = B6AD166930AEB11200BD9145 /* DynamicSurveyView.swift */; };
+		B6AD167130AEB20000BD9145 /* onnxruntime.xcframework in Frameworks */ = {isa = PBXBuildFile; fileRef = B6AD167030AEB20000BD9145 /* onnxruntime.xcframework */; };
+		B6AD167230AEB20000BD9145 /* onnxruntime.xcframework in Embed Frameworks */ = {isa = PBXBuildFile; fileRef = B6AD167030AEB20000BD9145 /* onnxruntime.xcframework */; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
+		B6AD168130AEB30000BD9145 /* openjev_classifier_int8.onnx in Resources */ = {isa = PBXBuildFile; fileRef = B6AD168030AEB30000BD9145 /* openjev_classifier_int8.onnx */; };
+		B6AD168330AEB30000BD9145 /* tokenizer.json in Resources */ = {isa = PBXBuildFile; fileRef = B6AD168230AEB30000BD9145 /* tokenizer.json */; };
+		B6B5F3F530B1728B003E3C57 /* README.md in Resources */ = {isa = PBXBuildFile; fileRef = B6B5F3F430B1728B003E3C57 /* README.md */; };
 /* End PBXBuildFile section */
+
+/* Begin PBXCopyFilesBuildPhase section */
+		B6AD167430AEB20000BD9145 /* Embed Frameworks */ = {
+			isa = PBXCopyFilesBuildPhase;
+			dstPath = "";
+			dstSubfolder = Frameworks;
+			files = (
+				B6AD167230AEB20000BD9145 /* onnxruntime.xcframework in Embed Frameworks */,
+			);
+			name = "Embed Frameworks";
+		};
+/* End PBXCopyFilesBuildPhase section */
 
 /* Begin PBXFileReference section */
 		000000000000000000000120 /* Simple-Surveys-IOS.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = "Simple-Surveys-IOS.app"; sourceTree = BUILT_PRODUCTS_DIR; };
@@ -110,17 +131,26 @@
 		B613C44E307C989E003BE546 /* TimerBadgeView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TimerBadgeView.swift; sourceTree = "<group>"; };
 		B613C452307C989E003BE546 /* IOS_FRONTEND_IMPLEMENTATION_PLAN.md */ = {isa = PBXFileReference; lastKnownFileType = net.daringfireball.markdown; path = IOS_FRONTEND_IMPLEMENTATION_PLAN.md; sourceTree = "<group>"; };
 		B613C490307C989E003BE546 /* NotificationConfig.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NotificationConfig.swift; sourceTree = "<group>"; };
-		B613C492307C989E003BE546 /* NotificationSchedulerProtocol.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NotificationSchedulerProtocol.swift; sourceTree = "<group>"; };
-		B613C494307C989E003BE546 /* NotificationScheduler.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NotificationScheduler.swift; sourceTree = "<group>"; };
 		B613C496307C989E003BE546 /* TermsAndConditionsView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TermsAndConditionsView.swift; sourceTree = "<group>"; };
 		B613C499307C989E003BE546 /* PrivacyPolicyView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PrivacyPolicyView.swift; sourceTree = "<group>"; };
 		B613C49B307C989E003BE546 /* LegalSheetView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LegalSheetView.swift; sourceTree = "<group>"; };
+		B65C8E2330AFFBE9002BCA43 /* FRONTEND_FOLLOWUP_AND_TIMER_PLAN.md */ = {isa = PBXFileReference; lastKnownFileType = net.daringfireball.markdown; path = FRONTEND_FOLLOWUP_AND_TIMER_PLAN.md; sourceTree = "<group>"; };
+		B6AD166030AEAFC700BD9145 /* FRONTEND_GATING_IMPLEMENTATION_PLAN.md */ = {isa = PBXFileReference; lastKnownFileType = net.daringfireball.markdown; path = FRONTEND_GATING_IMPLEMENTATION_PLAN.md; sourceTree = "<group>"; };
+		B6AD166330AEB0F700BD9145 /* OnDeviceGatingServiceProtocol.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = OnDeviceGatingServiceProtocol.swift; sourceTree = "<group>"; };
+		B6AD166530AEB0FD00BD9145 /* OnDeviceGatingService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = OnDeviceGatingService.swift; sourceTree = "<group>"; };
+		B6AD166730AEB10100BD9145 /* GatingProfiler.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GatingProfiler.swift; sourceTree = "<group>"; };
+		B6AD166930AEB11200BD9145 /* DynamicSurveyView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DynamicSurveyView.swift; sourceTree = "<group>"; };
+		B6AD167030AEB20000BD9145 /* onnxruntime.xcframework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.xcframework; name = onnxruntime.xcframework; path = "Simple-Surveys-iOS/Frameworks/onnxruntime.xcframework"; sourceTree = SOURCE_ROOT; };
+		B6AD168030AEB30000BD9145 /* openjev_classifier_int8.onnx */ = {isa = PBXFileReference; lastKnownFileType = text; path = openjev_classifier_int8.onnx; sourceTree = "<group>"; };
+		B6AD168230AEB30000BD9145 /* tokenizer.json */ = {isa = PBXFileReference; lastKnownFileType = text.json; path = tokenizer.json; sourceTree = "<group>"; };
+		B6B5F3F430B1728B003E3C57 /* README.md */ = {isa = PBXFileReference; lastKnownFileType = net.daringfireball.markdown; path = README.md; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
 		000000000000000130000000 /* Frameworks */ = {
 			isa = PBXFrameworksBuildPhase;
 			files = (
+				B6AD167130AEB20000BD9145 /* onnxruntime.xcframework in Frameworks */,
 			);
 		};
 /* End PBXFrameworksBuildPhase section */
@@ -129,6 +159,7 @@
 		000000000000000000000001 = {
 			isa = PBXGroup;
 			children = (
+				B6B5F3F430B1728B003E3C57 /* README.md */,
 				B613C453307C989E003BE546 /* Simple-Surveys-iOS */,
 				000000000000000000000020 /* Products */,
 			);
@@ -181,6 +212,8 @@
 			children = (
 				B613C420307C989E003BE546 /* Assets.xcassets */,
 				B613C421307C989E003BE546 /* Info.plist */,
+				B6AD168030AEB30000BD9145 /* openjev_classifier_int8.onnx */,
+				B6AD168230AEB30000BD9145 /* tokenizer.json */,
 			);
 			path = Resources;
 			sourceTree = "<group>";
@@ -218,8 +251,6 @@
 			children = (
 				B613C42D307C989E003BE546 /* NotificationService.swift */,
 				B613C42E307C989E003BE546 /* NotificationServiceProtocol.swift */,
-				B613C492307C989E003BE546 /* NotificationSchedulerProtocol.swift */,
-				B613C494307C989E003BE546 /* NotificationScheduler.swift */,
 			);
 			path = Notifications;
 			sourceTree = "<group>";
@@ -241,6 +272,7 @@
 				B613C42C307C989E003BE546 /* Network */,
 				B613C42F307C989E003BE546 /* Notifications */,
 				B613C432307C989E003BE546 /* Permissions */,
+				B6AD166230AEB0F700BD9145 /* Gating */,
 			);
 			path = Services;
 			sourceTree = "<group>";
@@ -314,6 +346,7 @@
 				B613C44C307C989E003BE546 /* SurveyCompletedView.swift */,
 				B613C44D307C989E003BE546 /* SurveyContainerView.swift */,
 				B613C44E307C989E003BE546 /* TimerBadgeView.swift */,
+				B6AD166930AEB11200BD9145 /* DynamicSurveyView.swift */,
 			);
 			path = Survey;
 			sourceTree = "<group>";
@@ -334,6 +367,7 @@
 		B613C453307C989E003BE546 /* Simple-Surveys-iOS */ = {
 			isa = PBXGroup;
 			children = (
+				B6AD167330AEB20000BD9145 /* Frameworks */,
 				B613C415307C989E003BE546 /* App */,
 				B613C41C307C989E003BE546 /* Models */,
 				B613C41F307C989E003BE546 /* Repositories */,
@@ -349,9 +383,29 @@
 		B613C484307CA940003BE546 /* Docs */ = {
 			isa = PBXGroup;
 			children = (
+				B65C8E2330AFFBE9002BCA43 /* FRONTEND_FOLLOWUP_AND_TIMER_PLAN.md */,
+				B6AD166030AEAFC700BD9145 /* FRONTEND_GATING_IMPLEMENTATION_PLAN.md */,
 				B613C452307C989E003BE546 /* IOS_FRONTEND_IMPLEMENTATION_PLAN.md */,
 			);
 			path = Docs;
+			sourceTree = "<group>";
+		};
+		B6AD166230AEB0F700BD9145 /* Gating */ = {
+			isa = PBXGroup;
+			children = (
+				B6AD166330AEB0F700BD9145 /* OnDeviceGatingServiceProtocol.swift */,
+				B6AD166530AEB0FD00BD9145 /* OnDeviceGatingService.swift */,
+				B6AD166730AEB10100BD9145 /* GatingProfiler.swift */,
+			);
+			path = Gating;
+			sourceTree = "<group>";
+		};
+		B6AD167330AEB20000BD9145 /* Frameworks */ = {
+			isa = PBXGroup;
+			children = (
+				B6AD167030AEB20000BD9145 /* onnxruntime.xcframework */,
+			);
+			path = Frameworks;
 			sourceTree = "<group>";
 		};
 /* End PBXGroup section */
@@ -364,6 +418,7 @@
 				000000000000000120000000 /* Sources */,
 				000000000000000130000000 /* Frameworks */,
 				000000000000000140000000 /* Resources */,
+				B6AD167430AEB20000BD9145 /* Embed Frameworks */,
 			);
 			buildRules = (
 			);
@@ -410,7 +465,12 @@
 		000000000000000140000000 /* Resources */ = {
 			isa = PBXResourcesBuildPhase;
 			files = (
+				B6B5F3F530B1728B003E3C57 /* README.md in Resources */,
 				B613C482307C989E003BE546 /* Assets.xcassets in Resources */,
+				B6AD166130AEAFC700BD9145 /* FRONTEND_GATING_IMPLEMENTATION_PLAN.md in Resources */,
+				B6AD168130AEB30000BD9145 /* openjev_classifier_int8.onnx in Resources */,
+				B65C8E2430AFFBE9002BCA43 /* FRONTEND_FOLLOWUP_AND_TIMER_PLAN.md in Resources */,
+				B6AD168330AEB30000BD9145 /* tokenizer.json in Resources */,
 			);
 		};
 /* End PBXResourcesBuildPhase section */
@@ -429,6 +489,7 @@
 				B613C45B307C989E003BE546 /* SurveyConfig.swift in Sources */,
 				B613C45C307C989E003BE546 /* SurveyViewModel.swift in Sources */,
 				B613C45D307C989E003BE546 /* PermissionManagerProtocol.swift in Sources */,
+				B6AD166630AEB0FD00BD9145 /* OnDeviceGatingService.swift in Sources */,
 				B613C45E307C989E003BE546 /* LoadingView.swift in Sources */,
 				B613C45F307C989E003BE546 /* APIClientProtocol.swift in Sources */,
 				B613C460307C989E003BE546 /* SurveyRepository.swift in Sources */,
@@ -442,10 +503,12 @@
 				B613C468307C989E003BE546 /* TimerBadgeView.swift in Sources */,
 				B613C469307C989E003BE546 /* TextQuestionView.swift in Sources */,
 				B613C46A307C989E003BE546 /* APIEndpoint.swift in Sources */,
+				B6AD166A30AEB11200BD9145 /* DynamicSurveyView.swift in Sources */,
 				B613C46B307C989E003BE546 /* NotificationServiceProtocol.swift in Sources */,
 				B613C46C307C989E003BE546 /* DeviceRegistration.swift in Sources */,
 				B613C46D307C989E003BE546 /* SurveyResponse.swift in Sources */,
 				B613C46E307C989E003BE546 /* OnboardingView.swift in Sources */,
+				B6AD166430AEB0F700BD9145 /* OnDeviceGatingServiceProtocol.swift in Sources */,
 				B613C46F307C989E003BE546 /* CameraService.swift in Sources */,
 				B613C470307C989E003BE546 /* ExpirationBannerView.swift in Sources */,
 				B613C471307C989E003BE546 /* PermissionRevokedView.swift in Sources */,
@@ -464,8 +527,7 @@
 				B613C47E307C989E003BE546 /* AppDelegate.swift in Sources */,
 				B613C47F307C989E003BE546 /* CameraViewModel.swift in Sources */,
 				B613C491307C989E003BE546 /* NotificationConfig.swift in Sources */,
-				B613C493307C989E003BE546 /* NotificationSchedulerProtocol.swift in Sources */,
-				B613C495307C989E003BE546 /* NotificationScheduler.swift in Sources */,
+				B6AD166830AEB10100BD9145 /* GatingProfiler.swift in Sources */,
 				B613C497307C989E003BE546 /* TermsAndConditionsView.swift in Sources */,
 				B613C498307C989E003BE546 /* PrivacyPolicyView.swift in Sources */,
 				B613C49A307C989E003BE546 /* LegalSheetView.swift in Sources */,
@@ -615,7 +677,11 @@
 				ASSETCATALOG_COMPILER_GENERATE_SWIFT_ASSET_SYMBOL_EXTENSIONS = NO;
 				CODE_SIGN_STYLE = Automatic;
 				CURRENT_PROJECT_VERSION = 1;
-				DEVELOPMENT_TEAM = Y93MWBL9X8;
+				DEVELOPMENT_TEAM = 68ZQ9LF6RT;
+				FRAMEWORK_SEARCH_PATHS = (
+					"$(inherited)",
+					"$(PROJECT_DIR)/Simple-Surveys-iOS/Frameworks",
+				);
 				GENERATE_INFOPLIST_FILE = NO;
 				INFOPLIST_FILE = "Simple-Surveys-iOS/Resources/Info.plist";
 				LD_RUNPATH_SEARCH_PATHS = (
@@ -623,6 +689,10 @@
 					"@executable_path/Frameworks",
 				);
 				MARKETING_VERSION = 1.0;
+				OTHER_LDFLAGS = (
+					"$(inherited)",
+					"-lc++",
+				);
 				PRODUCT_BUNDLE_IDENTIFIER = com.simplesurveys.ios;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SDKROOT = iphoneos;
@@ -644,7 +714,11 @@
 				ASSETCATALOG_COMPILER_GENERATE_SWIFT_ASSET_SYMBOL_EXTENSIONS = NO;
 				CODE_SIGN_STYLE = Automatic;
 				CURRENT_PROJECT_VERSION = 1;
-				DEVELOPMENT_TEAM = Y93MWBL9X8;
+				DEVELOPMENT_TEAM = 68ZQ9LF6RT;
+				FRAMEWORK_SEARCH_PATHS = (
+					"$(inherited)",
+					"$(PROJECT_DIR)/Simple-Surveys-iOS/Frameworks",
+				);
 				GENERATE_INFOPLIST_FILE = NO;
 				INFOPLIST_FILE = "Simple-Surveys-iOS/Resources/Info.plist";
 				LD_RUNPATH_SEARCH_PATHS = (
@@ -652,6 +726,10 @@
 					"@executable_path/Frameworks",
 				);
 				MARKETING_VERSION = 1.0;
+				OTHER_LDFLAGS = (
+					"$(inherited)",
+					"-lc++",
+				);
 				PRODUCT_BUNDLE_IDENTIFIER = com.simplesurveys.ios;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SDKROOT = iphoneos;

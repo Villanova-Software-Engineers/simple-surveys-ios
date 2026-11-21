@@ -12,7 +12,6 @@ struct SimpleSurveysApp: App {
     private let locationService: LocationServiceProtocol
     private let cameraService: CameraServiceProtocol
     private let permissionManager: PermissionManagerProtocol
-    private let scheduler: NotificationSchedulerProtocol
 
     init() {
         let client = APIClient(baseURL: AppConfiguration.apiBaseURL)
@@ -20,27 +19,23 @@ struct SimpleSurveysApp: App {
         let loc = LocationService()
         let cam = CameraService()
         let perms = PermissionManager(locationService: loc, cameraService: cam)
-        let sched = NotificationScheduler(repository: repo)
 
         self.apiClient = client
         self.repository = repo
         self.locationService = loc
         self.cameraService = cam
         self.permissionManager = perms
-        self.scheduler = sched
 
         _onboardingViewModel = State(
             initialValue: OnboardingViewModel(
                 permissionManager: perms,
-                repository: repo,
-                scheduler: sched
+                repository: repo
             )
         )
         _homeViewModel = State(
             initialValue: HomeViewModel(
                 repository: repo,
                 permissionManager: perms,
-                scheduler: sched,
                 locationService: loc
             )
         )

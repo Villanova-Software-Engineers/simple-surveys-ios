@@ -6,7 +6,7 @@ public enum AppConfiguration {
         #if targetEnvironment(simulator)
         return URL(string: "http://127.0.0.1:8000")!
         #else
-        return URL(string: "http://127.0.0.1:8000")!
+        return URL(string: "http://10.0.0.180:8000")!
         #endif
     }
     

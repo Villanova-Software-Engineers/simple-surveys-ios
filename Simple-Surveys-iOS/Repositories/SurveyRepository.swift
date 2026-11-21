@@ -54,15 +54,44 @@ public final class SurveyRepository: SurveyRepositoryProtocol {
             }
         } catch {
             #if DEBUG || targetEnvironment(simulator)
-            // When offline or testing in simulator without active backend, return successful submission receipt
+            // When offline or testing in simulator without active backend, return successful submission receipt.
+            // If the survey has adaptive follow-up enabled and this is the initial submission, provide a follow-up survey payload.
+            let simulatedResponseId = submission.responseId ?? "resp_\(UUID().uuidString.prefix(8).lowercased())"
+            var simulatedFollowUp: FollowUpSurveyPayload? = nil
+
+            if !submission.answers.isEmpty && submission.parentResponseId == nil {
+                simulatedFollowUp = FollowUpSurveyPayload(
+                    parentResponseId: simulatedResponseId,
+                    surveyId: submission.surveyId,
+                    roundNumber: 1,
+                    title: "Follow-up Questions",
+                    researcherMessage: "Thank you for sharing your thoughts. Could you share what specific task or activity is taking up most of your focus right now?",
+                    questions: [
+                        Question(
+                            questionId: "followup_task_focus",
+                            prompt: "What specific task or deadline is currently contributing most to your focus or pressure?",
+                            type: .text,
+                            isRequired: true,
+                            validationRules: ValidationRules(
+                                minLength: 3,
+                                maxLength: 250,
+                                placeholder: "e.g., Preparing project documentation..."
+                            )
+                        )
+                    ]
+                )
+            }
+
             return SurveySubmissionReceipt(
-                responseId: submission.responseId ?? UUID().uuidString,
+                responseId: simulatedResponseId,
                 surveyId: submission.surveyId,
                 status: submission.answers.isEmpty ? "EXPIRED" : "COMPLETED",
+                statusMessage: "Survey completed successfully within allowed window.",
                 message: "Survey response recorded (local simulation mode).",
                 imageStored: imageData != nil,
                 imageFilename: imageData != nil ? "surroundings.jpg" : nil,
-                receivedAt: Date()
+                receivedAt: Date(),
+                followupSurvey: simulatedFollowUp
             )
             #else
             throw error
@@ -163,8 +192,31 @@ public final class SurveyRepository: SurveyRepositoryProtocol {
                         maxLength: 250,
                         placeholder: "Type a brief note here (optional)..."
                     )
+                ),
+                Question(
+                    questionId: "q6_stress_followup",
+                    prompt: "What specific assignment or situation is causing the most pressure right now?",
+                    type: .text,
+                    isRequired: true,
+                    validationRules: ValidationRules(
+                        minLength: 3,
+                        maxLength: 250,
+                        placeholder: "Describe the specific source of stress..."
+                    ),
+                    gatingRule: QuestionGatingRule(
+                        sourceQuestionId: "q5_notes",
+                        operator: .openjevMatches,
+                        naturalLanguageCondition: "The person feels stress or pressure.",
+                        threshold: 0.55
+                    )
                 )
-            ]
+            ],
+            adaptiveFollowup: AdaptiveFollowUpConfig(
+                enabled: true,
+                maxQuestionsPerRound: 1,
+                maxFollowupRounds: 1,
+                researcherPrompt: "Explore specific sources of cognitive load or stress"
+            )
         )
     }
 }

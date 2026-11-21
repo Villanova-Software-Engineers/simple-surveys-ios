@@ -14,7 +14,22 @@ public final class APIClient: APIClientProtocol {
         self.jsonEncoder.dateEncodingStrategy = .iso8601
         
         self.jsonDecoder = JSONDecoder()
-        self.jsonDecoder.dateDecodingStrategy = .iso8601
+        let formatterFractional = ISO8601DateFormatter()
+        formatterFractional.formatOptions = [.withInternetDateTime, .withFractionalSeconds]
+        let formatterStandard = ISO8601DateFormatter()
+        formatterStandard.formatOptions = [.withInternetDateTime]
+
+        self.jsonDecoder.dateDecodingStrategy = .custom { decoder in
+            let container = try decoder.singleValueContainer()
+            let dateStr = try container.decode(String.self)
+            if let date = formatterFractional.date(from: dateStr) ?? formatterStandard.date(from: dateStr) {
+                return date
+            }
+            throw DecodingError.dataCorruptedError(
+                in: container,
+                debugDescription: "Cannot decode date string: \(dateStr)"
+            )
+        }
     }
 
     public func get<T: Decodable>(_ path: String) async throws -> T {

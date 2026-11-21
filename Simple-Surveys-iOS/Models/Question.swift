@@ -1,6 +1,43 @@
 import Foundation
 
+// MARK: - Gating Rule Operators & Definitions
+
+public enum GatingOperator: String, Codable, Sendable {
+    case openjevMatches = "openjev_matches"
+    case equals = "equals"
+    case greaterThan = "greater_than"
+    case lessThan = "less_than"
+    case contains = "contains"
+}
+
+public struct QuestionGatingRule: Codable, Sendable, Equatable {
+    public let sourceQuestionId: String
+    public let `operator`: GatingOperator
+    public let naturalLanguageCondition: String?
+    public let threshold: Double
+
+    enum CodingKeys: String, CodingKey {
+        case sourceQuestionId = "source_question_id"
+        case `operator` = "operator"
+        case naturalLanguageCondition = "natural_language_condition"
+        case threshold
+    }
+
+    public init(
+        sourceQuestionId: String,
+        operator: GatingOperator = .openjevMatches,
+        naturalLanguageCondition: String? = nil,
+        threshold: Double = 0.55
+    ) {
+        self.sourceQuestionId = sourceQuestionId
+        self.operator = `operator`
+        self.naturalLanguageCondition = naturalLanguageCondition
+        self.threshold = threshold
+    }
+}
+
 // MARK: - Polymorphic Question Model
+
 public struct Question: Codable, Identifiable, Sendable {
     public var id: String { questionId }
     public let questionId: String
@@ -8,6 +45,7 @@ public struct Question: Codable, Identifiable, Sendable {
     public let type: QuestionType
     public let isRequired: Bool
     public let validationRules: ValidationRules?
+    public let gatingRule: QuestionGatingRule?
 
     enum CodingKeys: String, CodingKey {
         case questionId = "question_id"
@@ -15,6 +53,7 @@ public struct Question: Codable, Identifiable, Sendable {
         case type
         case isRequired = "is_required"
         case validationRules = "validation_rules"
+        case gatingRule = "gating_rule"
     }
 
     public init(
@@ -22,15 +61,19 @@ public struct Question: Codable, Identifiable, Sendable {
         prompt: String,
         type: QuestionType,
         isRequired: Bool = true,
-        validationRules: ValidationRules? = nil
+        validationRules: ValidationRules? = nil,
+        gatingRule: QuestionGatingRule? = nil
     ) {
         self.questionId = questionId
         self.prompt = prompt
         self.type = type
         self.isRequired = isRequired
         self.validationRules = validationRules
+        self.gatingRule = gatingRule
     }
 }
+
+public typealias QuestionConfig = Question
 
 public enum QuestionType: String, Codable, Sendable {
     case ratingScale = "rating_scale"

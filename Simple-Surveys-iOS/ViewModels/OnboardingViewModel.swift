@@ -13,16 +13,13 @@ public final class OnboardingViewModel {
 
     private let permissionManager: PermissionManagerProtocol
     private let repository: SurveyRepositoryProtocol
-    private let scheduler: NotificationSchedulerProtocol?
 
     public init(
         permissionManager: PermissionManagerProtocol,
-        repository: SurveyRepositoryProtocol,
-        scheduler: NotificationSchedulerProtocol? = nil
+        repository: SurveyRepositoryProtocol
     ) {
         self.permissionManager = permissionManager
         self.repository = repository
-        self.scheduler = scheduler
 
         self.hasCompletedOnboarding = UserDefaults.standard.bool(forKey: "hasCompletedOnboarding")
         self.isTermsAccepted = UserDefaults.standard.bool(forKey: "hasAcceptedTerms")
@@ -83,12 +80,6 @@ public final class OnboardingViewModel {
             UserDefaults.standard.set(token, forKey: "registeredDeviceToken")
             UserDefaults.standard.set(true, forKey: "hasCompletedOnboarding")
 
-            // Initialize daily notification schedule
-            if let scheduler = scheduler {
-                statusMessage = "Scheduling daily survey prompts..."
-                _ = try? await scheduler.scheduleDailyNotifications()
-            }
-
             await MainActor.run {
                 self.statusMessage = "Device registered: \(response.status)"
                 self.hasCompletedOnboarding = true
@@ -98,22 +89,21 @@ public final class OnboardingViewModel {
             await MainActor.run {
                 self.isRegisteringDevice = false
                 self.statusMessage = nil
-                self.errorMessage = "Failed to register anonymous device with server: \(error.localizedDescription). Please verify your backend server connection."
+                self.errorMessage = "Device registration failed: \(error.localizedDescription). Please verify your connection."
             }
         }
     }
 
-    // MARK: - Private Token Management
-
+    /// Retrieves cached APNs device token or generates a persistent anonymous UUID device identifier
     private func getOrCreateAnonymousDeviceToken() -> String {
-        if let apnsToken = UserDefaults.standard.string(forKey: "cachedAPNsDeviceToken"), !apnsToken.isEmpty {
-            return apnsToken
+        if let token = UserDefaults.standard.string(forKey: "apnsDeviceToken"), !token.isEmpty {
+            return token
         }
-        if let existingAnon = UserDefaults.standard.string(forKey: "anonymousDeviceToken"), !existingAnon.isEmpty {
-            return existingAnon
+        if let existing = UserDefaults.standard.string(forKey: "anonymousDeviceToken"), !existing.isEmpty {
+            return existing
         }
-        let newToken = "anon_\(UUID().uuidString.lowercased().replacingOccurrences(of: "-", with: ""))"
-        UserDefaults.standard.set(newToken, forKey: "anonymousDeviceToken")
-        return newToken
+        let generated = "device_\(UUID().uuidString.lowercased())"
+        UserDefaults.standard.set(generated, forKey: "anonymousDeviceToken")
+        return generated
     }
 }
