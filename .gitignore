@@ -29,3 +29,5 @@ Pods/
 .DS_Store
 
 Simple-Surveys-iOS/Docs
+Frameworks/*.xcframework
+*.xcframework

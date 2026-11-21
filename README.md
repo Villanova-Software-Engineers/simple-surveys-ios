@@ -26,9 +26,9 @@ The client features **zero-latency on-device Natural Language Inference (NLI) qu
   - [System Architecture Flowchart](#system-architecture-flowchart)
   - [Survey Intake & Submission Sequence](#survey-intake--submission-sequence)
 - [Xcode Project Layout & Directory Structure](#xcode-project-layout--directory-structure)
-- [Prerequisites, Setup & Dependencies](#prerequisites-setup--dependencies)
+- [Getting Started & Setup](#getting-started--setup)
   - [Prerequisites](#prerequisites)
-  - [Embedded Frameworks & Assets](#embedded-frameworks--assets)
+  - [Framework & Model Setup](#framework--model-setup)
   - [Opening and Running the Project](#opening-and-running-the-project)
   - [Simulating Push Notifications in Development](#simulating-push-notifications-in-development)
 - [Configuration & Environment](#configuration--environment)
@@ -330,7 +330,7 @@ Simple-Surveys-iOS/
 
 ---
 
-## Prerequisites, Setup & Dependencies
+## Getting Started & Setup
 
 ### Prerequisites
 
@@ -342,15 +342,31 @@ Simple-Surveys-iOS/
 | **Deployment Target** | iOS 17.0 | iOS 17.0+ |
 | **Target Hardware** | Apple Silicon (M-Series Mac) | Apple Silicon for high-speed build & test |
 
-### Embedded Frameworks & Assets
+### Framework & Model Setup
 
-1. **`onnxruntime.xcframework`**:
-   - The project includes the pre-compiled universal Apple binary framework under `Simple-Surveys-iOS/Frameworks/onnxruntime.xcframework`.
-   - Embedded and signed under Xcode target **General > Frameworks, Libraries, and Embedded Content** with `Embed & Sign` enabled.
-2. **Bundled Neural Assets**:
-   - `openjev_classifier_int8.onnx` (~18MB): Quantized NLI weights.
-   - `tokenizer.json`: SentencePiece / Metaspace vocabulary.
-   - Both files are placed in `Simple-Surveys-iOS/Resources/` and verified under **Build Phases > Copy Bundle Resources**.
+After a fresh clone of the repository, set up the required native binary framework and bundled model assets before building:
+
+1. **Download ONNX Runtime Framework**:
+   * Download the official iOS release package from Microsoft's ONNX GitHub repository:
+     `https://github.com/microsoft/onnxruntime/releases/download/v1.18.0/onnxruntime-c-1.18.0-ios.zip`
+   * Unzip the downloaded file.
+
+2. **Place in Project Directory**:
+   * Create a `Frameworks/` folder in the root of the project target (if it does not already exist):
+     ```bash
+     mkdir -p Simple-Surveys-iOS/Frameworks
+     ```
+   * Move the unzipped `onnxruntime.xcframework` folder into the `Frameworks/` directory so the path is:
+     `Simple-Surveys-iOS/Frameworks/onnxruntime.xcframework`
+
+3. **Verify in Xcode**:
+   * Open `Simple-Surveys-iOS.xcodeproj` in Xcode.
+   * Select the **Simple-Surveys-iOS** target $\rightarrow$ **General** tab.
+   * Under **Frameworks, Libraries, and Embedded Content**, verify that `onnxruntime.xcframework` is present.
+   * Ensure its Embed setting is configured to **"Embed & Sign"**.
+
+4. **Verify Resources**:
+   * Confirm that the OpenJev model (`openjev_classifier_int8.onnx`) and tokenizer file (`tokenizer.json`) inside `Simple-Surveys-iOS/Resources/` are present in the target's **Build Phases $\rightarrow$ Copy Bundle Resources**.
 
 ### Opening and Running the Project
 
@@ -360,16 +376,18 @@ Simple-Surveys-iOS/
    cd Simple-Surveys-iOS
    ```
 
-2. **Open the project in Xcode**:
+2. **Set up the Framework & Model assets** (follow the [Framework & Model Setup](#framework--model-setup) steps above).
+
+3. **Open the project in Xcode**:
    ```bash
    open Simple-Surveys-iOS.xcodeproj
    ```
 
-3. **Select a Run Destination**:
+4. **Select a Run Destination**:
    - Choose any iOS 17+ Simulator (e.g., `iPhone 16 Pro` or `iPhone 15 Pro`).
    - Or connect a physical iOS device provisioned with your Apple Developer Team profile.
 
-4. **Build and Run**:
+5. **Build and Run**:
    - Press `Cmd + R` or select **Product > Run**.
 
 ### Simulating Push Notifications in Development

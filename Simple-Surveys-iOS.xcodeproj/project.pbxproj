@@ -66,6 +66,7 @@
 		B6AD167230AEB20000BD9145 /* onnxruntime.xcframework in Embed Frameworks */ = {isa = PBXBuildFile; fileRef = B6AD167030AEB20000BD9145 /* onnxruntime.xcframework */; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
 		B6AD168130AEB30000BD9145 /* openjev_classifier_int8.onnx in Resources */ = {isa = PBXBuildFile; fileRef = B6AD168030AEB30000BD9145 /* openjev_classifier_int8.onnx */; };
 		B6AD168330AEB30000BD9145 /* tokenizer.json in Resources */ = {isa = PBXBuildFile; fileRef = B6AD168230AEB30000BD9145 /* tokenizer.json */; };
+		B6B5F3F530B1728B003E3C57 /* README.md in Resources */ = {isa = PBXBuildFile; fileRef = B6B5F3F430B1728B003E3C57 /* README.md */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXCopyFilesBuildPhase section */
@@ -142,6 +143,7 @@
 		B6AD167030AEB20000BD9145 /* onnxruntime.xcframework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.xcframework; name = onnxruntime.xcframework; path = "Simple-Surveys-iOS/Frameworks/onnxruntime.xcframework"; sourceTree = SOURCE_ROOT; };
 		B6AD168030AEB30000BD9145 /* openjev_classifier_int8.onnx */ = {isa = PBXFileReference; lastKnownFileType = text; path = openjev_classifier_int8.onnx; sourceTree = "<group>"; };
 		B6AD168230AEB30000BD9145 /* tokenizer.json */ = {isa = PBXFileReference; lastKnownFileType = text.json; path = tokenizer.json; sourceTree = "<group>"; };
+		B6B5F3F430B1728B003E3C57 /* README.md */ = {isa = PBXFileReference; lastKnownFileType = net.daringfireball.markdown; path = README.md; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -157,6 +159,7 @@
 		000000000000000000000001 = {
 			isa = PBXGroup;
 			children = (
+				B6B5F3F430B1728B003E3C57 /* README.md */,
 				B613C453307C989E003BE546 /* Simple-Surveys-iOS */,
 				000000000000000000000020 /* Products */,
 			);
@@ -462,6 +465,7 @@
 		000000000000000140000000 /* Resources */ = {
 			isa = PBXResourcesBuildPhase;
 			files = (
+				B6B5F3F530B1728B003E3C57 /* README.md in Resources */,
 				B613C482307C989E003BE546 /* Assets.xcassets in Resources */,
 				B6AD166130AEAFC700BD9145 /* FRONTEND_GATING_IMPLEMENTATION_PLAN.md in Resources */,
 				B6AD168130AEB30000BD9145 /* openjev_classifier_int8.onnx in Resources */,
